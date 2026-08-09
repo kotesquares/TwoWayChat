@@ -715,18 +715,46 @@
                 const cls = isProactive ? 'msg-ai msg-proactive' : 'msg-ai';
                 const label = isProactive ? '⚡ ' + charName + ' [自発語りかけ/リード]' : charName;
                 appendMsg(label, reply, cls);
-                resetProactiveTimer(true);
+                resetProactiveTimer(true, reply);
             } catch(err) {
                 removeTypingIndicator();
                 appendMsg('システム', '通信エラーが発生しました: ' + err.message, 'msg-sys');
             }
         }
 
-        function resetProactiveTimer(start = false) {
+        function calculateDynamicTimeout(lastReplyText) {
+            const userConfigSeconds = parseFloat(document.getElementById('proactive_timeout_seconds').value) || 30;
+            let base = userConfigSeconds;
+
+            if (!lastReplyText) return base;
+
+            const trimmed = lastReplyText.trim();
+            // AIの最後が質問（？ や ?）で終わっているか判定
+            const isQuestion = /[？\?]\s*$/.test(trimmed) || trimmed.includes('？') || trimmed.includes('?');
+
+            if (isQuestion) {
+                // 質問された場合は返事を待つので長め (設定値の 1.5倍)
+                base = Math.round(userConfigSeconds * 1.5);
+            } else {
+                // 質問ではない語りかけ・挑発の場合は、しびれを切らしやすいので短め (設定値の 0.7倍)
+                base = Math.round(userConfigSeconds * 0.7);
+            }
+
+            // 人間らしいゆらぎ (±25% のランダム揺らぎ) を追加
+            const jitter = (Math.random() * 0.5) - 0.25; // -25% ~ +25%
+            let finalSeconds = Math.round(base * (1 + jitter));
+
+            // 最小8秒、最大90秒に制限
+            return Math.max(8, Math.min(90, finalSeconds));
+        }
+
+        function resetProactiveTimer(start = false, lastReplyText = "") {
             if (proactiveTimer) clearTimeout(proactiveTimer);
             if (!start) return;
 
-            const seconds = parseFloat(document.getElementById('proactive_timeout_seconds').value) || 30;
+            const seconds = calculateDynamicTimeout(lastReplyText);
+            console.log(`[Dynamic Timer] Calculated timeout: ${seconds} seconds (Context-based)`);
+
             proactiveTimer = setTimeout(() => {
                 showTypingIndicator();
                 callDirectRunPod(true);

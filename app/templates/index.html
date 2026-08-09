@@ -715,18 +715,41 @@
                 const cls = isProactive ? 'msg-ai msg-proactive' : 'msg-ai';
                 const label = isProactive ? '⚡ ' + charName + ' [自発語りかけ/リード]' : charName;
                 appendMsg(label, reply, cls);
-                resetProactiveTimer(true);
+                resetProactiveTimer(true, reply);
             } catch(err) {
                 removeTypingIndicator();
                 appendMsg('システム', '通信エラーが発生しました: ' + err.message, 'msg-sys');
             }
         }
 
-        function resetProactiveTimer(start = false) {
+        function calculateDynamicTimeout(lastReplyText) {
+            const userConfigSeconds = parseFloat(document.getElementById('proactive_timeout_seconds').value) || 30;
+            let base = userConfigSeconds;
+
+            if (!lastReplyText) return base;
+
+            const trimmed = lastReplyText.trim();
+            const isQuestion = /[？\?]\s*$/.test(trimmed) || trimmed.includes('？') || trimmed.includes('?');
+
+            if (isQuestion) {
+                base = Math.round(userConfigSeconds * 1.5);
+            } else {
+                base = Math.round(userConfigSeconds * 0.7);
+            }
+
+            const jitter = (Math.random() * 0.5) - 0.25;
+            let finalSeconds = Math.round(base * (1 + jitter));
+
+            return Math.max(8, Math.min(90, finalSeconds));
+        }
+
+        function resetProactiveTimer(start = false, lastReplyText = "") {
             if (proactiveTimer) clearTimeout(proactiveTimer);
             if (!start) return;
 
-            const seconds = parseFloat(document.getElementById('proactive_timeout_seconds').value) || 30;
+            const seconds = calculateDynamicTimeout(lastReplyText);
+            console.log(`[Dynamic Timer] Calculated timeout: ${seconds} seconds (Context-based)`);
+
             proactiveTimer = setTimeout(() => {
                 showTypingIndicator();
                 callDirectRunPod(true);
