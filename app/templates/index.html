@@ -394,13 +394,7 @@
         }
 
         function selectCharacterAndStart(charKey) {
-            // モバイルブラウザのオーディオ・コンテキストのアンロック
             stopAudio();
-            try {
-                const dummyAudio = new Audio();
-                dummyAudio.play().catch(() => {});
-            } catch(e) {}
-
             document.getElementById('charSelect').value = charKey;
             const labelMap = {
                 'maid': '🧹 ゆい (ドSメイド)',
@@ -411,7 +405,7 @@
             const displayEl = document.getElementById('currentCharDisplay');
             if (displayEl) displayEl.innerText = labelMap[charKey] || CHAR_MAP[charKey];
 
-            // 【ご要望対応】トップから新キャラを選択したら前の会話ログ・履歴を完全クリア！
+            // チャットログ・対話バッファの完全リセット
             const chatBox = document.getElementById('chat-box');
             if (chatBox) chatBox.innerHTML = '';
             sessionHistoryBuffer = [];
@@ -455,14 +449,17 @@
 
         function stopAudio() {
             if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
+                try {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                } catch(e) {}
                 currentAudio = null;
             }
             if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         }
 
-        function speakText(text) {
+        // 高音質 VOICEVOX 音声合成 API エンジン (Fetch Blob 変換 & マルチエンドポイント対応)
+        async function speakText(text) {
             if (!isVoiceEnabled) return;
             stopAudio();
 
@@ -472,17 +469,37 @@
             const cleanText = text.replace(/⚡.*?\[.*?\]/g, '').replace(/https?:\/\/\S+/g, '').trim();
             if (!cleanText) return;
 
-            // VOICEVOX 日本語音声合成 URL
-            const voicevoxUrl = `https://voicevox.su-shiki.com/api/tts?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`;
-            
-            currentAudio = new Audio();
-            currentAudio.src = voicevoxUrl;
-            currentAudio.play().then(() => {
-                console.log("[VOICEVOX] Playing anime character voice successfully!");
-            }).catch(err => {
-                console.warn("[VOICEVOX Autoplay / CORS fallback to WebSpeech]:", err);
+            // 1. パブリック VOICEVOX Web API エンドポイント (Fetch Blob 方式)
+            const endpoints = [
+                `https://voicevox.su-shiki.com/api/tts?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`,
+                `https://vvox.tiktik.work/api/v1/synthesis?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`
+            ];
+
+            let played = false;
+            for (let url of endpoints) {
+                try {
+                    console.log("[VOICEVOX] Fetching audio binary from:", url);
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error("API HTTP Error: " + res.status);
+                    
+                    const blob = await res.blob();
+                    const audioUrl = URL.createObjectURL(blob);
+                    
+                    currentAudio = new Audio(audioUrl);
+                    await currentAudio.play();
+                    console.log("[VOICEVOX SUCCESS] Playing VOICEVOX anime voice!");
+                    played = true;
+                    break;
+                } catch(err) {
+                    console.warn("[VOICEVOX Endpoint Warning]", err);
+                }
+            }
+
+            // 万が一、外部 VOICEVOX API が完全にダウン・拒否された場合のみブラウザ音声へ
+            if (!played) {
+                console.log("[VOICEVOX Fallback] WebSpeech API fallback triggered.");
                 speakTextBrowser(cleanText, charKey);
-            });
+            }
         }
 
         function speakTextBrowser(cleanText, charKey) {
