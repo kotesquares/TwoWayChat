@@ -142,76 +142,29 @@
         }
         .char-card:hover::before { opacity: 1; }
 
-        .char-avatar {
-            font-size: 2.8rem;
-            margin-bottom: 12px;
-        }
-        .char-name {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-        .char-role {
-            font-size: 0.8rem;
-            color: var(--accent-cyan);
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-        .char-desc {
-            font-size: 0.88rem;
-            color: var(--text-sub);
-            line-height: 1.5;
-            margin-bottom: 20px;
-            flex: 1;
-        }
+        .char-avatar { font-size: 2.8rem; margin-bottom: 12px; }
+        .char-name { font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+        .char-role { font-size: 0.8rem; color: var(--accent-cyan); font-weight: 600; margin-bottom: 12px; }
+        .char-desc { font-size: 0.88rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 20px; flex: 1; }
         .char-voice-tag {
-            font-size: 0.75rem;
-            background: rgba(138, 43, 226, 0.2);
-            color: #d8b4ff;
-            padding: 4px 8px;
-            border-radius: 6px;
-            display: inline-block;
-            margin-bottom: 15px;
-            border: 1px solid rgba(138, 43, 226, 0.4);
+            font-size: 0.75rem; background: rgba(138, 43, 226, 0.2); color: #d8b4ff; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-bottom: 15px; border: 1px solid rgba(138, 43, 226, 0.4);
         }
 
         .card-btn {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
-            color: white;
-            border: none;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: opacity 0.2s;
+            width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); color: white; border: none; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: opacity 0.2s;
         }
         .card-btn:hover { opacity: 0.9; }
 
         /* 設定カード & チャット */
         .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 24px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
         .card h2 {
-            font-size: 1.15rem;
-            margin-bottom: 15px;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 1.15rem; margin-bottom: 15px; color: var(--text-main); display: flex; align-items: center; gap: 8px;
         }
 
         .form-group { margin-bottom: 18px; }
-        .form-group label {
-            display: block; font-size: 0.85rem; color: var(--text-sub); margin-bottom: 6px; font-weight: 500;
-        }
+        .form-group label { display: block; font-size: 0.85rem; color: var(--text-sub); margin-bottom: 6px; font-weight: 500; }
         .form-group input, .form-group select {
             width: 100%; padding: 12px 15px; background: #0b0c12; border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 0.95rem;
         }
@@ -226,9 +179,7 @@
         .btn-secondary { background: #222536; color: var(--text-main); border: 1px solid var(--border-color); }
         .btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        .status-badge {
-            padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;
-        }
+        .status-badge { padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
         .status-online { background: rgba(0, 230, 118, 0.15); color: var(--success-green); border: 1px solid var(--success-green); }
         .status-mock { background: rgba(255, 170, 0, 0.15); color: #ffaa00; border: 1px solid #ffaa00; }
 
@@ -331,16 +282,12 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap;">
                     <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
                         <button class="btn btn-secondary" onclick="showView('home')" style="padding: 6px 12px; font-size: 0.85rem;">← トップへ戻る</button>
-                        <label style="font-size: 0.9rem; color: var(--text-sub);">パートナー:
-                            <select id="charSelect" onchange="changeCharacter()" style="padding: 6px 12px; background: #0f1017; color: white; border: 1px solid var(--border-color); border-radius: 6px; margin-left: 6px;">
-                                <option value="nurse">アヤネ (専属看護師 / 雨晴はう)</option>
-                                <option value="teacher">キョウコ (放課後教師 / 波音リツ)</option>
-                                <option value="maid" selected>ゆい (ドSメイド / 四国めたん)</option>
-                                <option value="childhood_friend">ミサキ (強気な幼馴染 / 春日部つむぎ)</option>
-                            </select>
-                        </label>
+                        <div style="font-size: 0.9rem; color: var(--text-sub); display: flex; align-items: center; gap: 6px;">
+                            パートナー: <span id="currentCharDisplay" style="font-weight: 700; color: #fff; background: rgba(255, 51, 119, 0.2); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--accent-pink);">🧹 ゆい (ドSメイド)</span>
+                        </div>
+                        <input type="hidden" id="charSelect" value="maid">
                         <label style="font-size: 0.9rem; color: var(--text-sub);">あなたのお名前: 
-                            <input type="text" id="userNameInput" value="ご主人様" onchange="changeCharacter()" style="padding: 6px 10px; background: #0f1017; color: white; border: 1px solid var(--border-color); border-radius: 6px; margin-left: 6px; width: 110px;">
+                            <input type="text" id="userNameInput" value="ご主人様" onchange="changeCharacter()" style="padding: 6px 10px; background: #0b0c12; color: white; border: 1px solid var(--border-color); border-radius: 6px; margin-left: 6px; width: 110px;">
                         </label>
                     </div>
                     <div style="display: flex; gap: 8px; align-items: center;">
@@ -510,6 +457,15 @@
 
         function selectCharacterAndStart(charKey) {
             document.getElementById('charSelect').value = charKey;
+            const labelMap = {
+                'maid': '🧹 ゆい (ドSメイド)',
+                'nurse': '💉 アヤネ (専属看護師)',
+                'teacher': '💋 キョウコ (放課後教師)',
+                'childhood_friend': '🎀 ミサキ (ツンデレ幼馴染)'
+            };
+            const displayEl = document.getElementById('currentCharDisplay');
+            if (displayEl) displayEl.innerText = labelMap[charKey] || CHAR_MAP[charKey];
+
             changeCharacter();
             showView('chat');
         }
@@ -1001,7 +957,17 @@
                     const jsonStr = new TextDecoder().decode(decryptedBuffer);
                     const saveData = JSON.parse(jsonStr);
 
-                    if (saveData.char) document.getElementById('charSelect').value = saveData.char;
+                    if (saveData.char) {
+                        document.getElementById('charSelect').value = saveData.char;
+                        const labelMap = {
+                            'maid': '🧹 ゆい (ドSメイド)',
+                            'nurse': '💉 アヤネ (専属看護師)',
+                            'teacher': '💋 キョウコ (放課後教師)',
+                            'childhood_friend': '🎀 ミサキ (ツンデレ幼馴染)'
+                        };
+                        const displayEl = document.getElementById('currentCharDisplay');
+                        if (displayEl) displayEl.innerText = labelMap[saveData.char] || CHAR_MAP[saveData.char];
+                    }
                     if (saveData.userName) document.getElementById('userNameInput').value = saveData.userName;
 
                     changeCharacter();
