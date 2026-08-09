@@ -689,15 +689,22 @@
                 removeTypingIndicator();
 
                 let reply = "";
-                if (data.output) {
-                    reply = typeof data.output === 'string' ? data.output : (data.output.response || JSON.stringify(data.output));
-                } else if (data.status === 'COMPLETED' && data.executionTime) {
-                    reply = `はい、${userNameVal}。準備はできていますよ。`;
-                } else {
-                    reply = `ふふ、どうしましたか、${userNameVal}？`;
+                let rawObj = data.output || data;
+                if (Array.isArray(rawObj) && rawObj.length > 0) {
+                    rawObj = rawObj[0];
                 }
 
-                // クリーニング
+                if (rawObj.choices && rawObj.choices.length > 0) {
+                    reply = rawObj.choices[0].text || (rawObj.choices[0].message ? rawObj.choices[0].message.content : "");
+                } else if (typeof rawObj === 'string') {
+                    reply = rawObj;
+                } else if (rawObj.response) {
+                    reply = rawObj.response;
+                } else {
+                    reply = JSON.stringify(rawObj);
+                }
+
+                // 地の文やタグのクリーニング
                 reply = reply.replace(/\*.*?\*/g, '').replace(/\(.*?\)/g, '').trim();
                 directConversationHistory.push({ role: 'assistant', content: reply });
 
