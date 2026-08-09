@@ -733,19 +733,19 @@
             const isQuestion = /[？\?]\s*$/.test(trimmed) || trimmed.includes('？') || trimmed.includes('?');
 
             if (isQuestion) {
-                // 質問された場合は返事を待つので長め (設定値の 1.5倍)
-                base = Math.round(userConfigSeconds * 1.5);
+                // 質問された場合は相手の返答をしっかり待つ (設定値の 1.8倍 : 例30秒設定なら約54秒)
+                base = Math.round(userConfigSeconds * 1.8);
             } else {
-                // 質問ではない語りかけ・挑発の場合は、しびれを切らしやすいので短め (設定値の 0.7倍)
-                base = Math.round(userConfigSeconds * 0.7);
+                // 言い切り・語りかけ・からかいの場合はスピーディーにしびれを切らして追撃 (設定値の 0.35倍 : 例30秒設定なら約10秒前後)
+                base = Math.round(userConfigSeconds * 0.35);
             }
 
-            // 人間らしいゆらぎ (±25% のランダム揺らぎ) を追加
-            const jitter = (Math.random() * 0.5) - 0.25; // -25% ~ +25%
+            // 人間らしいゆらぎ (±20% のランダム揺らぎ) を追加
+            const jitter = (Math.random() * 0.4) - 0.2; // -20% ~ +20%
             let finalSeconds = Math.round(base * (1 + jitter));
 
-            // 最小8秒、最大90秒に制限
-            return Math.max(8, Math.min(90, finalSeconds));
+            // 最小6秒、最大90秒に制限
+            return Math.max(6, Math.min(90, finalSeconds));
         }
 
         function resetProactiveTimer(start = false, lastReplyText = "") {

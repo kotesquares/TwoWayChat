@@ -732,15 +732,15 @@
             const isQuestion = /[？\?]\s*$/.test(trimmed) || trimmed.includes('？') || trimmed.includes('?');
 
             if (isQuestion) {
-                base = Math.round(userConfigSeconds * 1.5);
+                base = Math.round(userConfigSeconds * 1.8);
             } else {
-                base = Math.round(userConfigSeconds * 0.7);
+                base = Math.round(userConfigSeconds * 0.35);
             }
 
-            const jitter = (Math.random() * 0.5) - 0.25;
+            const jitter = (Math.random() * 0.4) - 0.2;
             let finalSeconds = Math.round(base * (1 + jitter));
 
-            return Math.max(8, Math.min(90, finalSeconds));
+            return Math.max(6, Math.min(90, finalSeconds));
         }
 
         function resetProactiveTimer(start = false, lastReplyText = "") {
