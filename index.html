@@ -52,93 +52,38 @@
             gap: 8px;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 10px;
-        }
+        .nav-links { display: flex; gap: 10px; }
         .nav-btn {
-            background: #1c1e2e;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 8px 14px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            background: #1c1e2e; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 14px; font-size: 0.85rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px;
         }
         .nav-btn:hover, .nav-btn.active {
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
-            color: white;
-            border-color: transparent;
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); color: white; border-color: transparent;
         }
 
         main {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            max-width: 1100px;
-            margin: 0 auto;
-            width: 100%;
+            flex: 1; padding: 20px; overflow-y: auto; max-width: 1100px; margin: 0 auto; width: 100%;
         }
 
         .view-panel { display: none; }
         .view-panel.active { display: block; }
 
-        /* トップページ (Home) デザイン */
-        .hero-section {
-            text-align: center;
-            padding: 30px 10px 40px;
-        }
+        .hero-section { text-align: center; padding: 30px 10px 40px; }
         .hero-section h2 {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #fff 30%, var(--accent-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 2rem; font-weight: 800; margin-bottom: 10px; background: linear-gradient(135deg, #fff 30%, var(--accent-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .hero-section p {
-            color: var(--text-sub);
-            font-size: 1rem;
-            max-width: 600px;
-            margin: 0 auto 20px;
-        }
+        .hero-section p { color: var(--text-sub); font-size: 1rem; max-width: 600px; margin: 0 auto 20px; }
 
         .char-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            margin-top: 10px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 10px;
         }
         .char-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 24px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
         }
         .char-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 4px;
-            background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple));
-            opacity: 0;
-            transition: opacity 0.3s;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple)); opacity: 0; transition: opacity 0.3s;
         }
         .char-card:hover {
-            transform: translateY(-6px);
-            border-color: var(--accent-pink);
-            box-shadow: 0 12px 30px rgba(255, 51, 119, 0.25);
+            transform: translateY(-6px); border-color: var(--accent-pink); box-shadow: 0 12px 30px rgba(255, 51, 119, 0.25);
         }
         .char-card:hover::before { opacity: 1; }
 
@@ -155,13 +100,10 @@
         }
         .card-btn:hover { opacity: 0.9; }
 
-        /* 設定カード & チャット */
         .card {
             background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 24px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
-        .card h2 {
-            font-size: 1.15rem; margin-bottom: 15px; color: var(--text-main); display: flex; align-items: center; gap: 8px;
-        }
+        .card h2 { font-size: 1.15rem; margin-bottom: 15px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
 
         .form-group { margin-bottom: 18px; }
         .form-group label { display: block; font-size: 0.85rem; color: var(--text-sub); margin-bottom: 6px; font-weight: 500; }
@@ -172,9 +114,7 @@
         .form-hint { font-size: 0.8rem; color: var(--text-sub); margin-top: 5px; }
 
         .btn-row { display: flex; gap: 12px; margin-top: 20px; }
-        .btn {
-            padding: 12px 24px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.95rem;
-        }
+        .btn { padding: 12px 24px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.95rem; }
         .btn-primary { background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); color: white; }
         .btn-secondary { background: #222536; color: var(--text-main); border: 1px solid var(--border-color); }
         .btn:hover { opacity: 0.9; transform: translateY(-1px); }
@@ -195,9 +135,7 @@
         .sender-name { font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; opacity: 0.8; }
 
         .chat-controls { display: flex; gap: 10px; margin-top: 12px; }
-        .chat-controls input {
-            flex: 1; padding: 12px 15px; background: #141622; border: 1px solid var(--border-color); border-radius: 8px; color: white;
-        }
+        .chat-controls input { flex: 1; padding: 12px 15px; background: #141622; border: 1px solid var(--border-color); border-radius: 8px; color: white; }
 
         .step-box { background: #11121a; border-left: 4px solid var(--accent-pink); padding: 15px 20px; border-radius: 0 8px 8px 0; margin-bottom: 15px; }
         .step-box h3 { font-size: 0.95rem; margin-bottom: 5px; color: #fff; }
@@ -456,6 +394,13 @@
         }
 
         function selectCharacterAndStart(charKey) {
+            // モバイルブラウザのオーディオ・コンテキストのアンロック
+            stopAudio();
+            try {
+                const dummyAudio = new Audio();
+                dummyAudio.play().catch(() => {});
+            } catch(e) {}
+
             document.getElementById('charSelect').value = charKey;
             const labelMap = {
                 'maid': '🧹 ゆい (ドSメイド)',
@@ -465,6 +410,13 @@
             };
             const displayEl = document.getElementById('currentCharDisplay');
             if (displayEl) displayEl.innerText = labelMap[charKey] || CHAR_MAP[charKey];
+
+            // 【ご要望対応】トップから新キャラを選択したら前の会話ログ・履歴を完全クリア！
+            const chatBox = document.getElementById('chat-box');
+            if (chatBox) chatBox.innerHTML = '';
+            sessionHistoryBuffer = [];
+            directConversationHistory = [];
+            if (proactiveTimer) clearTimeout(proactiveTimer);
 
             changeCharacter();
             showView('chat');
@@ -504,6 +456,7 @@
         function stopAudio() {
             if (currentAudio) {
                 currentAudio.pause();
+                currentAudio.currentTime = 0;
                 currentAudio = null;
             }
             if ('speechSynthesis' in window) window.speechSynthesis.cancel();
@@ -519,15 +472,17 @@
             const cleanText = text.replace(/⚡.*?\[.*?\]/g, '').replace(/https?:\/\/\S+/g, '').trim();
             if (!cleanText) return;
 
-            try {
-                const voicevoxUrl = `https://voicevox.su-shiki.com/api/tts?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`;
-                currentAudio = new Audio(voicevoxUrl);
-                currentAudio.play().catch(err => {
-                    speakTextBrowser(cleanText, charKey);
-                });
-            } catch(e) {
+            // VOICEVOX 日本語音声合成 URL
+            const voicevoxUrl = `https://voicevox.su-shiki.com/api/tts?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`;
+            
+            currentAudio = new Audio();
+            currentAudio.src = voicevoxUrl;
+            currentAudio.play().then(() => {
+                console.log("[VOICEVOX] Playing anime character voice successfully!");
+            }).catch(err => {
+                console.warn("[VOICEVOX Autoplay / CORS fallback to WebSpeech]:", err);
                 speakTextBrowser(cleanText, charKey);
-            }
+            });
         }
 
         function speakTextBrowser(cleanText, charKey) {
