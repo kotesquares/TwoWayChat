@@ -361,9 +361,10 @@
                             <input type="text" id="userNameInput" value="ご主人様" onchange="changeCharacter()" style="padding: 6px 10px; background: #0f1017; color: white; border: 1px solid var(--border-color); border-radius: 6px; margin-left: 6px; width: 110px;">
                         </label>
                         <div style="display: flex; gap: 8px;">
+                            <button id="stopToggleBtn" class="btn btn-secondary" onclick="toggleStop()" style="padding: 6px 14px; font-size: 0.85rem;">⏸️ STOP</button>
                             <button id="voiceToggleBtn" class="btn btn-primary" onclick="toggleVoice()" style="padding: 6px 14px; font-size: 0.85rem;">🔊 音声: ON</button>
-                            <button class="btn btn-secondary" onclick="saveSessionToFile()" style="padding: 6px 14px; font-size: 0.85rem;">🔒 暗号化セーブ</button>
-                            <button class="btn btn-secondary" onclick="triggerLoadFile()" style="padding: 6px 14px; font-size: 0.85rem;">🔑 復号化ロード</button>
+                            <button class="btn btn-secondary" onclick="saveSessionToFile()" style="padding: 6px 14px; font-size: 0.85rem;">💾 セーブ</button>
+                            <button class="btn btn-secondary" onclick="triggerLoadFile()" style="padding: 6px 14px; font-size: 0.85rem;">📂 ロード</button>
                             <input type="file" id="fileInput" accept=".dat" style="display: none;" onchange="loadSessionFromFile(event)">
                         </div>
                     </div>
@@ -389,6 +390,7 @@
         let isDirectMode = false;
         let directConversationHistory = [];
         let isVoiceEnabled = true;
+        let isStopped = false;
 
         const CHAR_MAP = {
             'nurse': 'アヤネ',
@@ -403,6 +405,23 @@
             'maid': { pitch: 1.25, rate: 1.1 },
             'childhood_friend': { pitch: 1.15, rate: 1.15 }
         };
+
+        function toggleStop() {
+            isStopped = !isStopped;
+            const btn = document.getElementById('stopToggleBtn');
+            if (isStopped) {
+                btn.innerText = '▶️ START';
+                btn.className = 'btn btn-primary';
+                if (proactiveTimer) clearTimeout(proactiveTimer);
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                appendMsg('システム', '会話を一時停止（STOP）しました。自発語りかけは停止します。', 'msg-sys');
+            } else {
+                btn.innerText = '⏸️ STOP';
+                btn.className = 'btn btn-secondary';
+                appendMsg('システム', '会話を再開（START）しました。', 'msg-sys');
+                resetProactiveTimer(true);
+            }
+        }
 
         function toggleVoice() {
             isVoiceEnabled = !isVoiceEnabled;
@@ -797,7 +816,7 @@
 
         function resetProactiveTimer(start = false, lastReplyText = "") {
             if (proactiveTimer) clearTimeout(proactiveTimer);
-            if (!start) return;
+            if (isStopped || !start) return;
 
             const seconds = calculateDynamicTimeout(lastReplyText);
             console.log(`[Dynamic Timer] Calculated timeout: ${seconds} seconds (Context-based)`);
