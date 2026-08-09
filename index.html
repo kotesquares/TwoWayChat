@@ -281,6 +281,38 @@
                     <div class="form-hint">自前のPCで動いている VOICEVOX アプリ/サーバーのURL。PCブラウザの場合は <span class="code-inline">http://localhost:50021</span> で爆速動作します！</div>
                 </div>
 
+                <!-- キャラクター別 追加プロンプト設定機能 -->
+                <hr style="border: none; border-top: 1px solid var(--border-color); margin: 25px 0 20px;">
+                <h3 style="font-size: 1.05rem; color: #fff; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                    🎭 キャラクター別 追加プロンプト指示（口調・性格・語尾など）
+                </h3>
+                <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 15px;">
+                    スペース（ブランク）やカンマで区切って自由に追加指示を入力できます。<br>
+                    例: <span class="code-inline">敬語を使わない, 語尾に「にゃん」と必ず付ける, 一人称を「ボク」にする</span>
+                </p>
+
+                <div class="form-group">
+                    <label>🧹 ゆい (ドSメイド) 追加指示</label>
+                    <input type="text" id="custom_prompt_maid" placeholder="例: 敬語を使わない 語尾に「にゃん」と必ず付ける">
+                </div>
+
+                <div class="form-group">
+                    <label>💉 アヤネ (専属看護師) 追加指示</label>
+                    <input type="text" id="custom_prompt_nurse" placeholder="例: 一人称を「お姉さん」にする 語尾に「〜ね」をつける">
+                </div>
+
+                <div class="form-group">
+                    <label>💋 キョウコ (特別指導教師) 追加指示</label>
+                    <input type="text" id="custom_prompt_teacher" placeholder="例: デレ多めにする 生徒呼びにする">
+                </div>
+
+                <div class="form-group">
+                    <label>🎀 ミサキ (ツンデレ幼馴染) 追加指示</label>
+                    <input type="text" id="custom_prompt_childhood_friend" placeholder="例: 語尾に「〜だよ」をつける 照れ隠しをする">
+                </div>
+
+                <hr style="border: none; border-top: 1px solid var(--border-color); margin: 25px 0 20px;">
+
                 <div class="form-group">
                     <label>Ollama モデル名 (Model Name)</label>
                     <input type="text" id="ollama_model_name" value="gemma2:9b">
@@ -579,6 +611,10 @@
                 runpod_api_key: localStorage.getItem('cfg_runpod_api_key') || '',
                 runpod_endpoint_id: localStorage.getItem('cfg_runpod_endpoint_id') || '',
                 voicevox_server_url: localStorage.getItem('cfg_voicevox_server_url') || 'http://localhost:50021',
+                custom_prompt_maid: localStorage.getItem('cfg_custom_prompt_maid') || '',
+                custom_prompt_nurse: localStorage.getItem('cfg_custom_prompt_nurse') || '',
+                custom_prompt_teacher: localStorage.getItem('cfg_custom_prompt_teacher') || '',
+                custom_prompt_childhood_friend: localStorage.getItem('cfg_custom_prompt_childhood_friend') || '',
                 ollama_model_name: localStorage.getItem('cfg_ollama_model_name') || 'gemma2:9b',
                 proactive_timeout_seconds: parseFloat(localStorage.getItem('cfg_proactive_timeout') || '30')
             };
@@ -589,6 +625,10 @@
             localStorage.setItem('cfg_runpod_api_key', cfg.runpod_api_key);
             localStorage.setItem('cfg_runpod_endpoint_id', cfg.runpod_endpoint_id);
             localStorage.setItem('cfg_voicevox_server_url', cfg.voicevox_server_url);
+            localStorage.setItem('cfg_custom_prompt_maid', cfg.custom_prompt_maid || '');
+            localStorage.setItem('cfg_custom_prompt_nurse', cfg.custom_prompt_nurse || '');
+            localStorage.setItem('cfg_custom_prompt_teacher', cfg.custom_prompt_teacher || '');
+            localStorage.setItem('cfg_custom_prompt_childhood_friend', cfg.custom_prompt_childhood_friend || '');
             localStorage.setItem('cfg_ollama_model_name', cfg.ollama_model_name);
             localStorage.setItem('cfg_proactive_timeout', cfg.proactive_timeout_seconds);
         }
@@ -602,6 +642,12 @@
                 document.getElementById('runpod_api_key').value = data.runpod_api_key;
                 document.getElementById('runpod_endpoint_id').value = data.runpod_endpoint_id;
                 document.getElementById('voicevox_server_url').value = data.voicevox_server_url || 'http://localhost:50021';
+                
+                if (document.getElementById('custom_prompt_maid')) document.getElementById('custom_prompt_maid').value = data.custom_prompt_maid || '';
+                if (document.getElementById('custom_prompt_nurse')) document.getElementById('custom_prompt_nurse').value = data.custom_prompt_nurse || '';
+                if (document.getElementById('custom_prompt_teacher')) document.getElementById('custom_prompt_teacher').value = data.custom_prompt_teacher || '';
+                if (document.getElementById('custom_prompt_childhood_friend')) document.getElementById('custom_prompt_childhood_friend').value = data.custom_prompt_childhood_friend || '';
+
                 document.getElementById('ollama_model_name').value = data.ollama_model_name;
                 document.getElementById('proactive_timeout_seconds').value = data.proactive_timeout_seconds;
                 updateStatusBadge(data.inference_mode);
@@ -612,6 +658,12 @@
                 document.getElementById('runpod_api_key').value = cfg.runpod_api_key;
                 document.getElementById('runpod_endpoint_id').value = cfg.runpod_endpoint_id;
                 document.getElementById('voicevox_server_url').value = cfg.voicevox_server_url;
+                
+                if (document.getElementById('custom_prompt_maid')) document.getElementById('custom_prompt_maid').value = cfg.custom_prompt_maid || '';
+                if (document.getElementById('custom_prompt_nurse')) document.getElementById('custom_prompt_nurse').value = cfg.custom_prompt_nurse || '';
+                if (document.getElementById('custom_prompt_teacher')) document.getElementById('custom_prompt_teacher').value = cfg.custom_prompt_teacher || '';
+                if (document.getElementById('custom_prompt_childhood_friend')) document.getElementById('custom_prompt_childhood_friend').value = cfg.custom_prompt_childhood_friend || '';
+
                 document.getElementById('ollama_model_name').value = cfg.ollama_model_name;
                 document.getElementById('proactive_timeout_seconds').value = cfg.proactive_timeout_seconds;
                 updateStatusBadge(cfg.inference_mode);
@@ -628,6 +680,10 @@
                 runpod_api_key: document.getElementById('runpod_api_key').value.trim(),
                 runpod_endpoint_id: document.getElementById('runpod_endpoint_id').value.trim(),
                 voicevox_server_url: document.getElementById('voicevox_server_url').value.trim(),
+                custom_prompt_maid: document.getElementById('custom_prompt_maid').value.trim(),
+                custom_prompt_nurse: document.getElementById('custom_prompt_nurse').value.trim(),
+                custom_prompt_teacher: document.getElementById('custom_prompt_teacher').value.trim(),
+                custom_prompt_childhood_friend: document.getElementById('custom_prompt_childhood_friend').value.trim(),
                 ollama_model_name: document.getElementById('ollama_model_name').value.trim(),
                 proactive_timeout_seconds: parseFloat(document.getElementById('proactive_timeout_seconds').value)
             };
@@ -744,7 +800,6 @@
                     const data = JSON.parse(event.data);
                     removeTypingIndicator();
                     const charName = CHAR_MAP[data.character] || data.character || 'AI';
-                    // 自発発話・通常応答ともに全く同じメッセージデザインで追加
                     if (data.type === 'ai_response' || data.type === 'proactive_message') {
                         appendMsg(charName, data.content, 'msg-ai');
                     }
@@ -800,6 +855,28 @@
             focusInput();
         }
 
+        // キャラクター固有のプロンプト＋カスタム追加指示の自動アペンド（結合）
+        function buildFullSystemPrompt(charKey, userNameVal, isProactive = false) {
+            let sysPrompt = (SYSTEM_PROMPTS[charKey] || "").replace("{user_name}", userNameVal);
+
+            // カンマ、読点、スペース区切りの追加プロンプトの読み込み
+            const el = document.getElementById(`custom_prompt_${charKey}`);
+            const customPromptStr = el ? el.value.trim() : (localStorage.getItem(`cfg_custom_prompt_${charKey}`) || '');
+
+            if (customPromptStr) {
+                const rules = customPromptStr.split(/[,、\s]+/).filter(r => r.length > 0);
+                if (rules.length > 0) {
+                    sysPrompt += "\n\n【追加の口調・性格カスタムルール】\n" + rules.map(r => `・${r}`).join("\n");
+                }
+            }
+
+            if (isProactive) {
+                sysPrompt += "\n\n【特別追加指示】現在ユーザーは短時間無言です。咎めずにこれまでの流れに沿って積極的に魅力的・情熱的に次の話題や甘い提案を投げてください。";
+            }
+
+            return sysPrompt;
+        }
+
         async function callDirectRunPod(isProactive = false) {
             const charKey = document.getElementById('charSelect').value;
             const userNameVal = document.getElementById('userNameInput').value.trim() || 'ご主人様';
@@ -812,16 +889,13 @@
                     ? `どうしたの、${userNameVal}？黙って見つめてくるなんて…私のこと、考えてた？`
                     : `はい、${userNameVal}。私は${charName}です。何でも聞いてくださいね。`;
                 
-                // 【ご要望対応】自発発言も通常応答とまったく同じ名前・同じ背景色にする
                 appendMsg(charName, mockReply, 'msg-ai');
                 resetProactiveTimer(true, mockReply);
                 return;
             }
 
-            let sysPrompt = (SYSTEM_PROMPTS[charKey] || "").replace("{user_name}", userNameVal);
-            if (isProactive) {
-                sysPrompt += "\n\n【特別追加指示】現在ユーザーは短時間無言です。咎めずにこれまでの流れに沿って積極的に魅力的・情熱的に次の話題や甘い提案を投げてください。";
-            }
+            // 追加プロンプトがアペンド（自動結合）されたシステムプロンプトの構築
+            let sysPrompt = buildFullSystemPrompt(charKey, userNameVal, isProactive);
 
             let fullPrompt = sysPrompt + "\n\n";
             directConversationHistory.forEach(m => {
@@ -867,7 +941,6 @@
                 reply = reply.replace(/\*.*?\*/g, '').replace(/\(.*?\)/g, '').trim();
                 directConversationHistory.push({ role: 'assistant', content: reply });
 
-                // 【ご要望対応】自発語りかけも通常応答と同じ背景・名前表記で表示
                 appendMsg(charName, reply, 'msg-ai');
                 resetProactiveTimer(true, reply);
             } catch(err) {
