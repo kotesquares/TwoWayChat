@@ -361,6 +361,7 @@
                             <input type="text" id="userNameInput" value="ご主人様" onchange="changeCharacter()" style="padding: 6px 10px; background: #0f1017; color: white; border: 1px solid var(--border-color); border-radius: 6px; margin-left: 6px; width: 110px;">
                         </label>
                         <div style="display: flex; gap: 8px;">
+                            <button id="voiceToggleBtn" class="btn btn-primary" onclick="toggleVoice()" style="padding: 6px 14px; font-size: 0.85rem;">🔊 音声: ON</button>
                             <button class="btn btn-secondary" onclick="saveSessionToFile()" style="padding: 6px 14px; font-size: 0.85rem;">🔒 暗号化セーブ</button>
                             <button class="btn btn-secondary" onclick="triggerLoadFile()" style="padding: 6px 14px; font-size: 0.85rem;">🔑 復号化ロード</button>
                             <input type="file" id="fileInput" accept=".dat" style="display: none;" onchange="loadSessionFromFile(event)">
@@ -387,6 +388,7 @@
         let proactiveTimer = null;
         let isDirectMode = false;
         let directConversationHistory = [];
+        let isVoiceEnabled = true;
 
         const CHAR_MAP = {
             'nurse': 'アヤネ',
@@ -394,6 +396,51 @@
             'maid': 'ゆい',
             'childhood_friend': 'ミサキ'
         };
+
+        const VOICE_PARAMS = {
+            'nurse': { pitch: 1.05, rate: 0.95 },
+            'teacher': { pitch: 0.85, rate: 0.9 },
+            'maid': { pitch: 1.25, rate: 1.1 },
+            'childhood_friend': { pitch: 1.15, rate: 1.15 }
+        };
+
+        function toggleVoice() {
+            isVoiceEnabled = !isVoiceEnabled;
+            const btn = document.getElementById('voiceToggleBtn');
+            if (isVoiceEnabled) {
+                btn.innerText = '🔊 音声: ON';
+                btn.className = 'btn btn-primary';
+                speakText("音声読み上げを有効にしました。");
+            } else {
+                btn.innerText = '🔇 音声: OFF';
+                btn.className = 'btn btn-secondary';
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            }
+        }
+
+        function speakText(text) {
+            if (!isVoiceEnabled || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+
+            const charKey = document.getElementById('charSelect').value;
+            const params = VOICE_PARAMS[charKey] || { pitch: 1.0, rate: 1.0 };
+
+            const cleanText = text.replace(/⚡.*?\[.*?\]/g, '').replace(/https?:\/\/\S+/g, '').trim();
+            if (!cleanText) return;
+
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.lang = 'ja-JP';
+            utterance.pitch = params.pitch;
+            utterance.rate = params.rate;
+
+            const voices = window.speechSynthesis.getVoices();
+            const jaVoice = voices.find(v => v.lang.includes('ja') || v.lang.includes('JA'));
+            if (jaVoice) {
+                utterance.voice = jaVoice;
+            }
+
+            window.speechSynthesis.speak(utterance);
+        }
 
         const SYSTEM_PROMPTS = {
             'nurse': "【基本設定】\nあなたの名前: アヤネ\nあなたの役割: 専属看護師\n対話相手（ユーザー）の名前: {user_name}\n性格: 優しく献身的だが、ユーザーの健康や態度に少し過保護・お節介。甘やかしつつも相手をリードする。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて積極的に問いかけたり誘惑・案内を投げること。",
@@ -917,6 +964,10 @@
             div.innerHTML = '<div class="sender-name">' + sender + '</div><div>' + formattedText + '</div>';
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
+
+            if (cls.includes('msg-ai')) {
+                speakText(text);
+            }
         }
     </script>
 </body>

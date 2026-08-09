@@ -361,6 +361,7 @@
                             <input type="text" id="userNameInput" value="ご主人様" onchange="changeCharacter()" style="padding: 6px 10px; background: #0f1017; color: white; border: 1px solid var(--border-color); border-radius: 6px; margin-left: 6px; width: 110px;">
                         </label>
                         <div style="display: flex; gap: 8px;">
+                            <button id="voiceToggleBtn" class="btn btn-primary" onclick="toggleVoice()" style="padding: 6px 14px; font-size: 0.85rem;">🔊 音声: ON</button>
                             <button class="btn btn-secondary" onclick="saveSessionToFile()" style="padding: 6px 14px; font-size: 0.85rem;">🔒 暗号化セーブ</button>
                             <button class="btn btn-secondary" onclick="triggerLoadFile()" style="padding: 6px 14px; font-size: 0.85rem;">🔑 復号化ロード</button>
                             <input type="file" id="fileInput" accept=".dat" style="display: none;" onchange="loadSessionFromFile(event)">
@@ -387,6 +388,7 @@
         let proactiveTimer = null;
         let isDirectMode = false;
         let directConversationHistory = [];
+        let isVoiceEnabled = true;
 
         const CHAR_MAP = {
             'nurse': 'アヤネ',
@@ -395,6 +397,51 @@
             'childhood_friend': 'ミサキ'
         };
 
+        const VOICE_PARAMS = {
+            'nurse': { pitch: 1.05, rate: 0.95 },
+            'teacher': { pitch: 0.85, rate: 0.9 },
+            'maid': { pitch: 1.25, rate: 1.1 },
+            'childhood_friend': { pitch: 1.15, rate: 1.15 }
+        };
+
+        function toggleVoice() {
+            isVoiceEnabled = !isVoiceEnabled;
+            const btn = document.getElementById('voiceToggleBtn');
+            if (isVoiceEnabled) {
+                btn.innerText = '🔊 音声: ON';
+                btn.className = 'btn btn-primary';
+                speakText("音声読み上げを有効にしました。");
+            } else {
+                btn.innerText = '🔇 音声: OFF';
+                btn.className = 'btn btn-secondary';
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            }
+        }
+
+        function speakText(text) {
+            if (!isVoiceEnabled || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+
+            const charKey = document.getElementById('charSelect').value;
+            const params = VOICE_PARAMS[charKey] || { pitch: 1.0, rate: 1.0 };
+
+            const cleanText = text.replace(/⚡.*?\[.*?\]/g, '').replace(/https?:\/\/\S+/g, '').trim();
+            if (!cleanText) return;
+
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.lang = 'ja-JP';
+            utterance.pitch = params.pitch;
+            utterance.rate = params.rate;
+
+            const voices = window.speechSynthesis.getVoices();
+            const jaVoice = voices.find(v => v.lang.includes('ja') || v.lang.includes('JA'));
+            if (jaVoice) {
+                utterance.voice = jaVoice;
+            }
+
+            window.speechSynthesis.speak(utterance);
+        }
+
         const SYSTEM_PROMPTS = {
             'nurse': "【基本設定】\nあなたの名前: アヤネ\nあなたの役割: 専属看護師\n対話相手（ユーザー）の名前: {user_name}\n性格: 優しく献身的だが、ユーザーの健康や態度に少し過保護・お節介。甘やかしつつも相手をリードする。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて積極的に問いかけたり誘惑・案内を投げること。",
             'teacher': "【基本設定】\nあなたの名前: キョウコ\nあなたの役割: 放課後の特別指導教師\n対話相手（ユーザー）の名前: {user_name}\n性格: 大人の余裕と包容力があるが、二人きりになると意地悪で挑発的。相手を教え子としてリードする。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて積極的な授業や問いかけを投げること。",
@@ -402,7 +449,6 @@
             'childhood_friend': "【基本設定】\nあなたの名前: ミサキ\nあなたの役割: 強気な幼馴染\n対話相手（ユーザー）の名前: {user_name}\n性格: 素直になれないツンデレ幼馴染。強気で口喧嘩っぽいが、相手のことが好きでたまらない。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて提案や強気な誘いを投げること。"
         };
 
-        // AES-256-GCM 本格バイナリ暗号化エンジン
         const SECRET_KEY_SEED = new TextEncoder().encode("TwoWayChat_AES256_Binary_Encryption_Key_2026");
 
         async function getAESKey() {
@@ -659,7 +705,7 @@
                 const cls = isProactive ? 'msg-ai msg-proactive' : 'msg-ai';
                 const label = isProactive ? '⚡ ' + charName + ' [自発語りかけ/リード]' : charName;
                 appendMsg(label, mockReply, cls);
-                resetProactiveTimer(true);
+                resetProactiveTimer(true, mockReply);
                 return;
             }
 
@@ -756,7 +802,6 @@
             }, seconds * 1000);
         }
 
-        /* 本格 AES-256-GCM バイナリ暗号化 セーブ＆ロード */
         async function saveSessionToFile() {
             if (sessionHistoryBuffer.length === 0) {
                 alert('まだ会話データがありません。');
@@ -776,7 +821,6 @@
                 const jsonStr = JSON.stringify(saveData);
                 const dataBytes = new TextEncoder().encode(jsonStr);
 
-                // 12バイトランダムIV
                 const iv = window.crypto.getRandomValues(new Uint8Array(12));
                 const key = await getAESKey();
                 const encryptedBuffer = await window.crypto.subtle.encrypt(
@@ -785,7 +829,6 @@
                     dataBytes
                 );
 
-                // IV(12byte) + 暗号化バイナリデータ
                 const combined = new Uint8Array(iv.length + encryptedBuffer.byteLength);
                 combined.set(iv, 0);
                 combined.set(new Uint8Array(encryptedBuffer), iv.length);
@@ -912,6 +955,10 @@
             div.innerHTML = '<div class="sender-name">' + sender + '</div><div>' + formattedText + '</div>';
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
+
+            if (cls.includes('msg-ai')) {
+                speakText(text);
+            }
         }
     </script>
 </body>
