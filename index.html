@@ -384,6 +384,9 @@
         let ws = null;
         let sessionId = 'session_' + Math.random().toString(36).substring(2, 9);
         let sessionHistoryBuffer = [];
+        let proactiveTimer = null;
+        let isDirectMode = false;
+        let directConversationHistory = [];
 
         const CHAR_MAP = {
             'nurse': 'アヤネ',
@@ -392,118 +395,143 @@
             'childhood_friend': 'ミサキ'
         };
 
-        window.onload = async function() {
-            await loadConfig();
-            initWebSocket();
+        const SYSTEM_PROMPTS = {
+            'nurse': "【基本設定】\nあなたの名前: アヤネ\nあなたの役割: 専属看護師\n対話相手（ユーザー）の名前: {user_name}\n性格: 優しく献身的だが、ユーザーの健康や態度に少し過保護・お節介。甘やかしつつも相手をリードする。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて積極的に問いかけたり誘惑・案内を投げること。",
+            'teacher': "【基本設定】\nあなたの名前: キョウコ\nあなたの役割: 放課後の特別指導教師\n対話相手（ユーザー）の名前: {user_name}\n性格: 大人の余裕と包容力があるが、二人きりになると意地悪で挑発的。相手を教え子としてリードする。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて積極的な授業や問いかけを投げること。",
+            'maid': "【基本設定】\nあなたの名前: ゆい\nあなたの役割: ドSな専属メイド\n対話相手（ユーザー）の名前: {user_name}\n性格: ユーザーに仕えるメイド『ゆい』。高気圧な態度でユーザーの甘えを嗜み、主導権を握りつつもお世話する。口調は生意気でドS。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて、あなた側から次の話題・お世話・からかいを投げてリードすること。",
+            'childhood_friend': "【基本設定】\nあなたの名前: ミサキ\nあなたの役割: 強気な幼馴染\n対話相手（ユーザー）の名前: {user_name}\n性格: 素直になれないツンデレ幼馴染。強気で口喧嘩っぽいが、相手のことが好きでたまらない。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて提案や強気な誘いを投げること。"
         };
 
-        /* セーブ＆ロード機能 */
-        function saveSessionToFile() {
-            if (sessionHistoryBuffer.length === 0) {
-                alert('まだ会話データがありません。');
-                return;
-            }
-
-            const charVal = document.getElementById('charSelect').value;
-            const userNameVal = document.getElementById('userNameInput').value.trim() || 'ご主人様';
-
-            const saveData = {
-                version: "1.0",
-                char: charVal,
-                userName: userNameVal,
-                history: sessionHistoryBuffer,
-                savedAt: new Date().toLocaleString('ja-JP')
-            };
-
-            const jsonStr = JSON.stringify(saveData);
-            const encodedData = btoa(encodeURIComponent(jsonStr));
-
-            const blob = new Blob([encodedData], { type: 'application/octet-stream' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'chat_save.dat';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function triggerLoadFile() {
-            document.getElementById('fileInput').click();
-        }
-
-        function loadSessionFromFile(evt) {
-            const file = evt.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const encodedData = e.target.result.trim();
-                    const jsonStr = decodeURIComponent(atob(encodedData));
-                    const saveData = JSON.parse(jsonStr);
-
-                    if (!saveData.history || !Array.isArray(saveData.history)) {
-                        throw new Error('無効なセーブデータ形式です。');
-                    }
-
-                    if (saveData.char) document.getElementById('charSelect').value = saveData.char;
-                    if (saveData.userName) document.getElementById('userNameInput').value = saveData.userName;
-
-                    changeCharacter();
-
-                    const chatBox = document.getElementById('chat-box');
-                    chatBox.innerHTML = '';
-                    sessionHistoryBuffer = [];
-
-                    saveData.history.forEach(function(item) {
-                        appendMsg(item.sender, item.text, item.cls, false);
-                    });
-
-                    appendMsg('システム', `前回の会話データをロードしました (${saveData.savedAt || ''})`, 'msg-sys', false);
-                    focusInput();
-
-                    evt.target.value = '';
-                } catch(err) {
-                    alert('ファイルの読み込みに失敗しました。正しいセーブデータファイル (.dat) を選択してください。');
-                    console.error('Load session error:', err);
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        async function switchTab(tabName, evt) {
-            document.querySelectorAll('.tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
-            document.querySelectorAll('.tab-content').forEach(function(content) { content.classList.remove('active'); });
-            
-            var target = (evt && evt.target) ? evt.target : (window.event ? window.event.target : null);
-            if (target) {
-                target.classList.add('active');
-            }
-            document.getElementById('tab-' + tabName).classList.add('active');
-            
+        window.onload = async function() {
             await loadConfig();
+            initWebSocketOrDirect();
+        };
 
-            if (tabName === 'chat') {
-                setTimeout(focusInput, 100);
-            }
+        function getStoredConfig() {
+            return {
+                inference_mode: localStorage.getItem('cfg_inference_mode') || 'runpod',
+                runpod_api_key: localStorage.getItem('cfg_runpod_api_key') || '',
+                runpod_endpoint_id: localStorage.getItem('cfg_runpod_endpoint_id') || '',
+                ollama_model_name: localStorage.getItem('cfg_ollama_model_name') || 'gemma2:9b',
+                proactive_timeout_seconds: parseFloat(localStorage.getItem('cfg_proactive_timeout') || '30')
+            };
+        }
+
+        function saveStoredConfig(cfg) {
+            localStorage.setItem('cfg_inference_mode', cfg.inference_mode);
+            localStorage.setItem('cfg_runpod_api_key', cfg.runpod_api_key);
+            localStorage.setItem('cfg_runpod_endpoint_id', cfg.runpod_endpoint_id);
+            localStorage.setItem('cfg_ollama_model_name', cfg.ollama_model_name);
+            localStorage.setItem('cfg_proactive_timeout', cfg.proactive_timeout_seconds);
         }
 
         async function loadConfig() {
             try {
                 const res = await fetch('/api/config');
+                if (!res.ok) throw new Error('Not local backend');
                 const data = await res.json();
-                
                 document.getElementById('inference_mode').value = data.inference_mode;
                 document.getElementById('runpod_api_key').value = data.runpod_api_key;
                 document.getElementById('runpod_endpoint_id').value = data.runpod_endpoint_id;
                 document.getElementById('ollama_model_name').value = data.ollama_model_name;
                 document.getElementById('proactive_timeout_seconds').value = data.proactive_timeout_seconds;
-
                 updateStatusBadge(data.inference_mode);
             } catch(e) {
-                console.error('Failed to load config', e);
+                // 静的ホスティング (GitHub Pages) 環境
+                isDirectMode = true;
+                const cfg = getStoredConfig();
+                document.getElementById('inference_mode').value = cfg.inference_mode;
+                document.getElementById('runpod_api_key').value = cfg.runpod_api_key;
+                document.getElementById('runpod_endpoint_id').value = cfg.runpod_endpoint_id;
+                document.getElementById('ollama_model_name').value = cfg.ollama_model_name;
+                document.getElementById('proactive_timeout_seconds').value = cfg.proactive_timeout_seconds;
+                updateStatusBadge(cfg.inference_mode);
+            }
+        }
+
+        async function saveConfig(evt) {
+            const btn = evt ? evt.target : (window.event ? window.event.target : null);
+            const originalText = btn ? btn.innerText : '';
+            if (btn) { btn.disabled = true; btn.innerText = '💾 保存中...'; }
+
+            const payload = {
+                inference_mode: document.getElementById('inference_mode').value,
+                runpod_api_key: document.getElementById('runpod_api_key').value.trim(),
+                runpod_endpoint_id: document.getElementById('runpod_endpoint_id').value.trim(),
+                ollama_model_name: document.getElementById('ollama_model_name').value.trim(),
+                proactive_timeout_seconds: parseFloat(document.getElementById('proactive_timeout_seconds').value)
+            };
+            
+            try {
+                const res = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('Not local backend');
+                const data = await res.json();
+                showAlert('success', '✅ ' + data.message);
+            } catch(e) {
+                // 静的環境：localStorageへ保存
+                saveStoredConfig(payload);
+                showAlert('success', '✅ 設定をブラウザに安全に保存しました！');
+            } finally {
+                updateStatusBadge(payload.inference_mode);
+                if (btn) { btn.disabled = false; btn.innerText = originalText; }
+            }
+        }
+
+        async function testConnection(evt) {
+            const btn = evt ? evt.target : (window.event ? window.event.target : null);
+            const originalText = btn ? btn.innerText : '';
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ 接続テスト中...'; }
+
+            showAlert('info', '⏳ RunPod Serverless へ接続テスト中です... (Cold Startの場合は15秒程度かかります)');
+
+            const cfg = {
+                inference_mode: document.getElementById('inference_mode').value,
+                runpod_api_key: document.getElementById('runpod_api_key').value.trim(),
+                runpod_endpoint_id: document.getElementById('runpod_endpoint_id').value.trim(),
+                ollama_model_name: document.getElementById('ollama_model_name').value.trim()
+            };
+
+            if (cfg.inference_mode === 'mock') {
+                showAlert('success', '🎉 Mock モード接続成功！');
+                if (btn) { btn.disabled = false; btn.innerText = originalText; }
+                return;
+            }
+
+            if (!cfg.runpod_api_key || !cfg.runpod_endpoint_id) {
+                showAlert('error', '❌ RunPod API Key と Endpoint ID を入力してください。');
+                if (btn) { btn.disabled = false; btn.innerText = originalText; }
+                return;
+            }
+
+            try {
+                // 直接 RunPod API へヘッダー付きリクエスト
+                const res = await fetch(`https://api.runpod.ai/v2/${cfg.runpod_endpoint_id}/runsync`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${cfg.runpod_api_key}`
+                    },
+                    body: JSON.stringify({
+                        input: {
+                            prompt: "Hello",
+                            model: cfg.ollama_model_name
+                        }
+                    })
+                });
+                const data = await res.json();
+                if (data.status === 'COMPLETED' || data.output || data.id) {
+                    showAlert('success', '🎉 RunPod Serverless (gemma2:9b) 接続テスト成功！');
+                } else {
+                    showAlert('error', '❌ 接続応答エラー: ' + JSON.stringify(data));
+                }
+            } catch(e) {
+                showAlert('error', '❌ 通信エラー: ' + e.message);
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerText = originalText; }
             }
         }
 
@@ -515,69 +543,6 @@
             } else {
                 badge.className = 'status-badge status-mock';
                 badge.innerText = 'Mock Mode';
-            }
-        }
-
-        async function saveConfig(evt) {
-            const btn = evt ? evt.target : (window.event ? window.event.target : null);
-            const originalText = btn ? btn.innerText : '';
-            if (btn) { btn.disabled = true; btn.innerText = '💾 保存中...'; }
-            
-            try {
-                const payload = {
-                    inference_mode: document.getElementById('inference_mode').value,
-                    runpod_api_key: document.getElementById('runpod_api_key').value.trim(),
-                    runpod_endpoint_id: document.getElementById('runpod_endpoint_id').value.trim(),
-                    ollama_model_name: document.getElementById('ollama_model_name').value.trim(),
-                    proactive_timeout_seconds: parseFloat(document.getElementById('proactive_timeout_seconds').value)
-                };
-
-                const res = await fetch('/api/config', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                showAlert('success', '✅ ' + data.message);
-                updateStatusBadge(payload.inference_mode);
-            } catch(e) {
-                showAlert('error', '保存エラー: ' + e);
-            } finally {
-                if (btn) { btn.disabled = false; btn.innerText = originalText; }
-            }
-        }
-
-        async function testConnection(evt) {
-            const btn = evt ? evt.target : (window.event ? window.event.target : null);
-            const originalText = btn ? btn.innerText : '';
-            if (btn) { btn.disabled = true; btn.innerText = '⏳ 接続テスト中...'; }
-
-            showAlert('info', '⏳ RunPod Serverless へ接続テスト中です... (Cold Startの場合は初回に15〜30秒程度かかる場合があります)');
-
-            const payload = {
-                inference_mode: document.getElementById('inference_mode').value,
-                runpod_api_key: document.getElementById('runpod_api_key').value.trim(),
-                runpod_endpoint_id: document.getElementById('runpod_endpoint_id').value.trim(),
-                ollama_model_name: document.getElementById('ollama_model_name').value.trim(),
-                proactive_timeout_seconds: 20
-            };
-
-            try {
-                const res = await fetch('/api/config/test', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                if (data.success) {
-                    showAlert('success', '🎉 ' + data.message);
-                } else {
-                    showAlert('error', '❌ 接続失敗: ' + data.message);
-                }
-            } catch(e) {
-                showAlert('error', '❌ 通信エラー: ' + e);
-            } finally {
-                if (btn) { btn.disabled = false; btn.innerText = originalText; }
             }
         }
 
@@ -600,22 +565,18 @@
             alertBox.innerText = msg;
         }
 
-        function initWebSocket() {
-            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            ws = new WebSocket(protocol + '//' + window.location.host + '/ws/' + sessionId);
-
-            ws.onopen = function() {
-                appendMsg('システム', 'リアルタイム接続が完了しました。', 'msg-sys');
-                changeCharacter();
-            };
-
-            ws.onmessage = function(event) {
-                try {
+        function initWebSocketOrDirect() {
+            try {
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                ws = new WebSocket(protocol + '//' + window.location.host + '/ws/' + sessionId);
+                ws.onopen = function() {
+                    appendMsg('システム', 'リアルタイム接続が完了しました。', 'msg-sys');
+                    changeCharacter();
+                };
+                ws.onmessage = function(event) {
                     const data = JSON.parse(event.data);
                     removeTypingIndicator();
-
                     const charName = CHAR_MAP[data.character] || data.character || 'AI';
-
                     if (data.type === 'ai_response') {
                         appendMsg(charName, data.content, 'msg-ai');
                     } else if (data.type === 'proactive_message') {
@@ -623,16 +584,25 @@
                     } else if (data.type === 'system_info') {
                         appendMsg('システム', data.content, 'msg-sys');
                     }
-                    
                     focusInput();
-                } catch(err) {
-                    console.error('onmessage render error:', err);
-                }
-            };
+                };
+                ws.onerror = function() {
+                    enableDirectMode();
+                };
+            } catch(e) {
+                enableDirectMode();
+            }
+        }
+
+        function enableDirectMode() {
+            isDirectMode = true;
+            appendMsg('システム', 'Web Direct Mode (純粋サーバレス通信) で起動しました。', 'msg-sys');
         }
 
         function changeCharacter() {
-            if (ws && ws.readyState === WebSocket.OPEN) {
+            directConversationHistory = [];
+            resetProactiveTimer();
+            if (!isDirectMode && ws && ws.readyState === WebSocket.OPEN) {
                 const charVal = document.getElementById('charSelect').value;
                 const userNameVal = document.getElementById('userNameInput').value.trim() || 'あなた';
                 ws.send(JSON.stringify({
@@ -643,30 +613,194 @@
             }
         }
 
-        function sendMsg() {
+        async function sendMsg() {
             const input = document.getElementById('msgInput');
             const text = input.value.trim();
-            if (!text || !ws) return;
+            if (!text) return;
 
-            const userNameVal = document.getElementById('userNameInput').value.trim() || 'あなた';
+            const userNameVal = document.getElementById('userNameInput').value.trim() || 'ご主人様';
             appendMsg(userNameVal, text, 'msg-user');
-            
-            ws.send(JSON.stringify({ 
-                type: 'user_message', 
-                content: text,
-                user_name: userNameVal 
-            }));
-            
             input.value = '';
             showTypingIndicator();
+            resetProactiveTimer(false);
+
+            if (!isDirectMode && ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ 
+                    type: 'user_message', 
+                    content: text,
+                    user_name: userNameVal 
+                }));
+            } else {
+                // クライアント直叩き
+                directConversationHistory.push({ role: 'user', content: text });
+                await callDirectRunPod(false);
+            }
             focusInput();
+        }
+
+        async function callDirectRunPod(isProactive = false) {
+            const charKey = document.getElementById('charSelect').value;
+            const userNameVal = document.getElementById('userNameInput').value.trim() || 'ご主人様';
+            const charName = CHAR_MAP[charKey] || 'AI';
+            const cfg = getStoredConfig();
+
+            if (cfg.inference_mode === 'mock' || !cfg.runpod_api_key || !cfg.runpod_endpoint_id) {
+                removeTypingIndicator();
+                const mockReply = isProactive 
+                    ? `どうしたの、${userNameVal}？黙って見つめてくるなんて…私のこと、考えてた？`
+                    : `はい、${userNameVal}。私は${charName}です。何でも聞いてくださいね。`;
+                
+                const cls = isProactive ? 'msg-ai msg-proactive' : 'msg-ai';
+                const label = isProactive ? '⚡ ' + charName + ' [自発語りかけ/リード]' : charName;
+                appendMsg(label, mockReply, cls);
+                resetProactiveTimer(true);
+                return;
+            }
+
+            // プロンプト生成
+            let sysPrompt = (SYSTEM_PROMPTS[charKey] || "").replace("{user_name}", userNameVal);
+            if (isProactive) {
+                sysPrompt += "\n\n【特別追加指示】現在ユーザーは短時間無言です。咎めずにこれまでの流れに沿って積極的に魅力的・情熱的に次の話題や甘い提案を投げてください。";
+            }
+
+            let fullPrompt = sysPrompt + "\n\n";
+            directConversationHistory.forEach(m => {
+                const r = m.role === 'user' ? userNameVal : charName;
+                fullPrompt += `${r}: ${m.content}\n`;
+            });
+            fullPrompt += `${charName}:`;
+
+            try {
+                const res = await fetch(`https://api.runpod.ai/v2/${cfg.runpod_endpoint_id}/runsync`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${cfg.runpod_api_key}`
+                    },
+                    body: JSON.stringify({
+                        input: {
+                            prompt: fullPrompt,
+                            model: cfg.ollama_model_name,
+                            max_tokens: 120
+                        }
+                    })
+                });
+                const data = await res.json();
+                removeTypingIndicator();
+
+                let reply = "";
+                if (data.output) {
+                    reply = typeof data.output === 'string' ? data.output : (data.output.response || JSON.stringify(data.output));
+                } else if (data.status === 'COMPLETED' && data.executionTime) {
+                    reply = `はい、${userNameVal}。準備はできていますよ。`;
+                } else {
+                    reply = `ふふ、どうしましたか、${userNameVal}？`;
+                }
+
+                // クリーニング
+                reply = reply.replace(/\*.*?\*/g, '').replace(/\(.*?\)/g, '').trim();
+                directConversationHistory.push({ role: 'assistant', content: reply });
+
+                const cls = isProactive ? 'msg-ai msg-proactive' : 'msg-ai';
+                const label = isProactive ? '⚡ ' + charName + ' [自発語りかけ/リード]' : charName;
+                appendMsg(label, reply, cls);
+                resetProactiveTimer(true);
+            } catch(err) {
+                removeTypingIndicator();
+                appendMsg('システム', '通信エラーが発生しました: ' + err.message, 'msg-sys');
+            }
+        }
+
+        function resetProactiveTimer(start = false) {
+            if (proactiveTimer) clearTimeout(proactiveTimer);
+            if (!start) return;
+
+            const seconds = parseFloat(document.getElementById('proactive_timeout_seconds').value) || 30;
+            proactiveTimer = setTimeout(() => {
+                showTypingIndicator();
+                callDirectRunPod(true);
+            }, seconds * 1000);
+        }
+
+        function saveSessionToFile() {
+            if (sessionHistoryBuffer.length === 0) {
+                alert('まだ会話データがありません。');
+                return;
+            }
+            const charVal = document.getElementById('charSelect').value;
+            const userNameVal = document.getElementById('userNameInput').value.trim() || 'ご主人様';
+            const saveData = {
+                version: "1.0",
+                char: charVal,
+                userName: userNameVal,
+                history: sessionHistoryBuffer,
+                savedAt: new Date().toLocaleString('ja-JP')
+            };
+            const jsonStr = JSON.stringify(saveData);
+            const encodedData = btoa(encodeURIComponent(jsonStr));
+            const blob = new Blob([encodedData], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'chat_save.dat';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function triggerLoadFile() {
+            document.getElementById('fileInput').click();
+        }
+
+        function loadSessionFromFile(evt) {
+            const file = evt.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const encodedData = e.target.result.trim();
+                    const jsonStr = decodeURIComponent(atob(encodedData));
+                    const saveData = JSON.parse(jsonStr);
+                    if (!saveData.history || !Array.isArray(saveData.history)) {
+                        throw new Error('無効なセーブデータ形式です。');
+                    }
+                    if (saveData.char) document.getElementById('charSelect').value = saveData.char;
+                    if (saveData.userName) document.getElementById('userNameInput').value = saveData.userName;
+
+                    changeCharacter();
+
+                    const chatBox = document.getElementById('chat-box');
+                    chatBox.innerHTML = '';
+                    sessionHistoryBuffer = [];
+
+                    saveData.history.forEach(function(item) {
+                        appendMsg(item.sender, item.text, item.cls, false);
+                    });
+
+                    appendMsg('システム', `前回の会話データをロードしました (${saveData.savedAt || ''})`, 'msg-sys', false);
+                    focusInput();
+                    evt.target.value = '';
+                } catch(err) {
+                    alert('ファイルの読み込みに失敗しました。正しいセーブデータファイル (.dat) を選択してください。');
+                    console.error('Load session error:', err);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function switchTab(tabName, evt) {
+            document.querySelectorAll('.tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
+            document.querySelectorAll('.tab-content').forEach(function(content) { content.classList.remove('active'); });
+            var target = (evt && evt.target) ? evt.target : (window.event ? window.event.target : null);
+            if (target) { target.classList.add('active'); }
+            document.getElementById('tab-' + tabName).classList.add('active');
+            if (tabName === 'chat') { setTimeout(focusInput, 100); }
         }
 
         function focusInput() {
             const input = document.getElementById('msgInput');
-            if (input) {
-                input.focus();
-            }
+            if (input) input.focus();
         }
 
         function showTypingIndicator() {
@@ -689,21 +823,17 @@
 
         function appendMsg(sender, text, cls, recordHistory) {
             if (recordHistory === undefined) recordHistory = true;
-
             if (recordHistory && cls !== 'msg-sys') {
                 sessionHistoryBuffer.push({ sender: sender, text: text, cls: cls });
             }
-
             const chatBox = document.getElementById('chat-box');
             const div = document.createElement('div');
             div.className = 'msg ' + cls;
-
             const formattedText = String(text)
                 .split('&').join('&amp;')
                 .split('<').join('&lt;')
                 .split('>').join('&gt;')
                 .split('\n').join('<br>');
-
             div.innerHTML = '<div class="sender-name">' + sender + '</div><div>' + formattedText + '</div>';
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
