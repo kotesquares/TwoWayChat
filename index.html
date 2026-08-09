@@ -361,8 +361,8 @@
                             <input type="text" id="userNameInput" value="ご主人様" onchange="changeCharacter()" style="padding: 6px 10px; background: #0f1017; color: white; border: 1px solid var(--border-color); border-radius: 6px; margin-left: 6px; width: 110px;">
                         </label>
                         <div style="display: flex; gap: 8px;">
-                            <button class="btn btn-secondary" onclick="saveSessionToFile()" style="padding: 6px 14px; font-size: 0.85rem;">💾 セーブ</button>
-                            <button class="btn btn-secondary" onclick="triggerLoadFile()" style="padding: 6px 14px; font-size: 0.85rem;">📂 ロード</button>
+                            <button class="btn btn-secondary" onclick="saveSessionToFile()" style="padding: 6px 14px; font-size: 0.85rem;">🔒 暗号化セーブ</button>
+                            <button class="btn btn-secondary" onclick="triggerLoadFile()" style="padding: 6px 14px; font-size: 0.85rem;">🔑 復号化ロード</button>
                             <input type="file" id="fileInput" accept=".dat" style="display: none;" onchange="loadSessionFromFile(event)">
                         </div>
                     </div>
@@ -402,6 +402,16 @@
             'childhood_friend': "【基本設定】\nあなたの名前: ミサキ\nあなたの役割: 強気な幼馴染\n対話相手（ユーザー）の名前: {user_name}\n性格: 素直になれないツンデレ幼馴染。強気で口喧嘩っぽいが、相手のことが好きでたまらない。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて提案や強気な誘いを投げること。"
         };
 
+        // AES-256-GCM 本格バイナリ暗号化エンジン
+        const SECRET_KEY_SEED = new TextEncoder().encode("TwoWayChat_AES256_Binary_Encryption_Key_2026");
+
+        async function getAESKey() {
+            const hash = await window.crypto.subtle.digest('SHA-256', SECRET_KEY_SEED);
+            return window.crypto.subtle.importKey(
+                'raw', hash, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']
+            );
+        }
+
         window.onload = async function() {
             await loadConfig();
             initWebSocketOrDirect();
@@ -437,7 +447,6 @@
                 document.getElementById('proactive_timeout_seconds').value = data.proactive_timeout_seconds;
                 updateStatusBadge(data.inference_mode);
             } catch(e) {
-                // 静的ホスティング (GitHub Pages) 環境
                 isDirectMode = true;
                 const cfg = getStoredConfig();
                 document.getElementById('inference_mode').value = cfg.inference_mode;
@@ -472,7 +481,6 @@
                 const data = await res.json();
                 showAlert('success', '✅ ' + data.message);
             } catch(e) {
-                // 静的環境：localStorageへ保存
                 saveStoredConfig(payload);
                 showAlert('success', '✅ 設定をブラウザに安全に保存しました！');
             } finally {
@@ -508,7 +516,6 @@
             }
 
             try {
-                // 直接 RunPod API へヘッダー付きリクエスト
                 const res = await fetch(`https://api.runpod.ai/v2/${cfg.runpod_endpoint_id}/runsync`, {
                     method: 'POST',
                     headers: {
@@ -631,7 +638,6 @@
                     user_name: userNameVal 
                 }));
             } else {
-                // クライアント直叩き
                 directConversationHistory.push({ role: 'user', content: text });
                 await callDirectRunPod(false);
             }
@@ -657,7 +663,6 @@
                 return;
             }
 
-            // プロンプト生成
             let sysPrompt = (SYSTEM_PROMPTS[charKey] || "").replace("{user_name}", userNameVal);
             if (isProactive) {
                 sysPrompt += "\n\n【特別追加指示】現在ユーザーは短時間無言です。咎めずにこれまでの流れに沿って積極的に魅力的・情熱的に次の話題や甘い提案を投げてください。";
@@ -704,7 +709,6 @@
                     reply = JSON.stringify(rawObj);
                 }
 
-                // 地の文やタグのクリーニング
                 reply = reply.replace(/\*.*?\*/g, '').replace(/\(.*?\)/g, '').trim();
                 directConversationHistory.push({ role: 'assistant', content: reply });
 
@@ -729,7 +733,8 @@
             }, seconds * 1000);
         }
 
-        function saveSessionToFile() {
+        /* 本格 AES-256-GCM バイナリ暗号化 セーブ＆ロード */
+        async function saveSessionToFile() {
             if (sessionHistoryBuffer.length === 0) {
                 alert('まだ会話データがありません。');
                 return;
@@ -737,23 +742,44 @@
             const charVal = document.getElementById('charSelect').value;
             const userNameVal = document.getElementById('userNameInput').value.trim() || 'ご主人様';
             const saveData = {
-                version: "1.0",
+                version: "2.0_AES256",
                 char: charVal,
                 userName: userNameVal,
                 history: sessionHistoryBuffer,
                 savedAt: new Date().toLocaleString('ja-JP')
             };
-            const jsonStr = JSON.stringify(saveData);
-            const encodedData = btoa(encodeURIComponent(jsonStr));
-            const blob = new Blob([encodedData], { type: 'application/octet-stream' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'chat_save.dat';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+
+            try {
+                const jsonStr = JSON.stringify(saveData);
+                const dataBytes = new TextEncoder().encode(jsonStr);
+
+                // 12バイトランダムIV
+                const iv = window.crypto.getRandomValues(new Uint8Array(12));
+                const key = await getAESKey();
+                const encryptedBuffer = await window.crypto.subtle.encrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    key,
+                    dataBytes
+                );
+
+                // IV(12byte) + 暗号化バイナリデータ
+                const combined = new Uint8Array(iv.length + encryptedBuffer.byteLength);
+                combined.set(iv, 0);
+                combined.set(new Uint8Array(encryptedBuffer), iv.length);
+
+                const blob = new Blob([combined], { type: 'application/octet-stream' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'chat_save.dat';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch(e) {
+                alert('暗号化保存エラー: ' + e.message);
+                console.error(e);
+            }
         }
 
         function triggerLoadFile() {
@@ -763,15 +789,34 @@
         function loadSessionFromFile(evt) {
             const file = evt.target.files[0];
             if (!file) return;
+
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
-                    const encodedData = e.target.result.trim();
-                    const jsonStr = decodeURIComponent(atob(encodedData));
+                    const arrayBuffer = e.target.result;
+                    const combined = new Uint8Array(arrayBuffer);
+
+                    if (combined.length < 13) {
+                        throw new Error('暗号データ長が不正です。');
+                    }
+
+                    const iv = combined.slice(0, 12);
+                    const ciphertext = combined.slice(12);
+
+                    const key = await getAESKey();
+                    const decryptedBuffer = await window.crypto.subtle.decrypt(
+                        { name: 'AES-GCM', iv: iv },
+                        key,
+                        ciphertext
+                    );
+
+                    const jsonStr = new TextDecoder().decode(decryptedBuffer);
                     const saveData = JSON.parse(jsonStr);
+
                     if (!saveData.history || !Array.isArray(saveData.history)) {
                         throw new Error('無効なセーブデータ形式です。');
                     }
+
                     if (saveData.char) document.getElementById('charSelect').value = saveData.char;
                     if (saveData.userName) document.getElementById('userNameInput').value = saveData.userName;
 
@@ -785,15 +830,15 @@
                         appendMsg(item.sender, item.text, item.cls, false);
                     });
 
-                    appendMsg('システム', `前回の会話データをロードしました (${saveData.savedAt || ''})`, 'msg-sys', false);
+                    appendMsg('システム', `🔒 AES-256 バイナリ暗号化データの解読・復元に成功しました (${saveData.savedAt || ''})`, 'msg-sys', false);
                     focusInput();
                     evt.target.value = '';
                 } catch(err) {
-                    alert('ファイルの読み込みに失敗しました。正しいセーブデータファイル (.dat) を選択してください。');
+                    alert('暗号化データの復号に失敗しました。正しいセーブデータファイル (.dat) を選択してください。');
                     console.error('Load session error:', err);
                 }
             };
-            reader.readAsText(file);
+            reader.readAsArrayBuffer(file);
         }
 
         function switchTab(tabName, evt) {
