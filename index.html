@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TwoWayChat - RunPod Serverless 管理 & チャットコンソール</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>TwoWayChat - 双方向プロアクティブAIチャット</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <meta name="robots" content="noindex, nofollow">
     <style>
         :root {
-            --bg-dark: #0f1017;
-            --card-bg: #181a24;
+            --bg-dark: #090a0f;
+            --card-bg: #141622;
             --accent-pink: #ff3377;
             --accent-purple: #8a2be2;
+            --accent-cyan: #00e5ff;
             --text-main: #f0f2f5;
             --text-sub: #9aa0a6;
-            --border-color: #2a2d3d;
+            --border-color: #26293b;
             --success-green: #00e676;
         }
 
@@ -30,68 +31,176 @@
         }
 
         header {
-            background: rgba(24, 26, 36, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(20, 22, 34, 0.85);
+            backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-color);
-            padding: 15px 30px;
+            padding: 14px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            z-index: 100;
         }
         header h1 {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             background: linear-gradient(135deg, #ff3377, #8a2be2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: 700;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .tabs {
+        .nav-links {
             display: flex;
             gap: 10px;
-            background: #12131c;
-            padding: 5px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
         }
-        .tab-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-sub);
-            padding: 8px 16px;
-            font-size: 0.9rem;
+        .nav-btn {
+            background: #1c1e2e;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 14px;
+            font-size: 0.85rem;
             font-weight: 600;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
-        .tab-btn.active {
+        .nav-btn:hover, .nav-btn.active {
             background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
             color: white;
+            border-color: transparent;
         }
 
         main {
             flex: 1;
-            padding: 25px;
+            padding: 20px;
             overflow-y: auto;
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             width: 100%;
         }
 
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .view-panel { display: none; }
+        .view-panel.active { display: block; }
 
+        /* トップページ (Home) デザイン */
+        .hero-section {
+            text-align: center;
+            padding: 30px 10px 40px;
+        }
+        .hero-section h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff 30%, var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-section p {
+            color: var(--text-sub);
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+
+        .char-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-top: 10px;
+        }
+        .char-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .char-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .char-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent-pink);
+            box-shadow: 0 12px 30px rgba(255, 51, 119, 0.25);
+        }
+        .char-card:hover::before { opacity: 1; }
+
+        .char-avatar {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+        }
+        .char-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        .char-role {
+            font-size: 0.8rem;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .char-desc {
+            font-size: 0.88rem;
+            color: var(--text-sub);
+            line-height: 1.5;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+        .char-voice-tag {
+            font-size: 0.75rem;
+            background: rgba(138, 43, 226, 0.2);
+            color: #d8b4ff;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 15px;
+            border: 1px solid rgba(138, 43, 226, 0.4);
+        }
+
+        .card-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
+            color: white;
+            border: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .card-btn:hover { opacity: 0.9; }
+
+        /* 設定カード & チャット */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 25px;
+            border-radius: 14px;
+            padding: 24px;
             margin-bottom: 20px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
         .card h2 {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             margin-bottom: 15px;
             color: var(--text-main);
             display: flex;
@@ -99,206 +208,163 @@
             gap: 8px;
         }
 
-        .form-group {
-            margin-bottom: 18px;
-        }
+        .form-group { margin-bottom: 18px; }
         .form-group label {
-            display: block;
-            font-size: 0.85rem;
-            color: var(--text-sub);
-            margin-bottom: 6px;
-            font-weight: 500;
+            display: block; font-size: 0.85rem; color: var(--text-sub); margin-bottom: 6px; font-weight: 500;
         }
         .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px 15px;
-            background: #0f1017;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-main);
-            font-size: 0.95rem;
+            width: 100%; padding: 12px 15px; background: #0b0c12; border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 0.95rem;
         }
-        .form-group input:focus, .form-group select:focus {
-            border-color: var(--accent-pink);
-            outline: none;
-        }
-        .form-hint {
-            font-size: 0.8rem;
-            color: var(--text-sub);
-            margin-top: 5px;
-        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--accent-pink); outline: none; }
+        .form-hint { font-size: 0.8rem; color: var(--text-sub); margin-top: 5px; }
 
-        .btn-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
+        .btn-row { display: flex; gap: 12px; margin-top: 20px; }
         .btn {
-            padding: 12px 24px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.95rem;
+            padding: 12px 24px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.95rem;
         }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
-            color: white;
-        }
-        .btn-secondary {
-            background: #252836;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-        }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); color: white; }
+        .btn-secondary { background: #222536; color: var(--text-main); border: 1px solid var(--border-color); }
         .btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
         .status-badge {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;
         }
         .status-online { background: rgba(0, 230, 118, 0.15); color: var(--success-green); border: 1px solid var(--success-green); }
         .status-mock { background: rgba(255, 170, 0, 0.15); color: #ffaa00; border: 1px solid #ffaa00; }
 
-        .step-box {
-            background: #11121a;
-            border-left: 4px solid var(--accent-pink);
-            padding: 15px 20px;
-            border-radius: 0 8px 8px 0;
-            margin-bottom: 15px;
+        #chat-container { display: flex; flex-direction: column; height: 530px; }
+        #chat-box {
+            flex: 1; background: #0b0c12; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
         }
+        .msg { max-width: 82%; padding: 12px 16px; border-radius: 12px; font-size: 0.95rem; line-height: 1.5; }
+        .msg-user { background: #1c3254; color: #e6f0ff; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .msg-ai { background: #331940; color: #fae8ff; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .msg-proactive { background: #4a152d; border: 1px solid #ff3377; box-shadow: 0 0 12px rgba(255, 51, 119, 0.3); }
+        .msg-sys { align-self: center; background: rgba(255,255,255,0.05); color: var(--text-sub); font-size: 0.8rem; }
+        .sender-name { font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; opacity: 0.8; }
+
+        .chat-controls { display: flex; gap: 10px; margin-top: 12px; }
+        .chat-controls input {
+            flex: 1; padding: 12px 15px; background: #141622; border: 1px solid var(--border-color); border-radius: 8px; color: white;
+        }
+
+        .step-box { background: #11121a; border-left: 4px solid var(--accent-pink); padding: 15px 20px; border-radius: 0 8px 8px 0; margin-bottom: 15px; }
         .step-box h3 { font-size: 0.95rem; margin-bottom: 5px; color: #fff; }
         .step-box p { font-size: 0.85rem; color: var(--text-sub); line-height: 1.5; }
-        .code-inline {
-            background: #222533;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-            color: #ff88b5;
-        }
-
-        #chat-container {
-            display: flex;
-            flex-direction: column;
-            height: 520px;
-        }
-        #chat-box {
-            flex: 1;
-            background: #0d0e14;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .msg {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-        .msg-user {
-            background: #203556;
-            color: #e6f0ff;
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
-        }
-        .msg-ai {
-            background: #351d42;
-            color: #fae8ff;
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-        }
-        .msg-proactive {
-            background: #4a152d;
-            border: 1px solid #ff3377;
-            box-shadow: 0 0 12px rgba(255, 51, 119, 0.3);
-        }
-        .msg-sys {
-            align-self: center;
-            background: rgba(255,255,255,0.05);
-            color: var(--text-sub);
-            font-size: 0.8rem;
-        }
-        .sender-name {
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-            opacity: 0.8;
-        }
-
-        .chat-controls {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px;
-        }
-        .chat-controls input {
-            flex: 1;
-            padding: 12px 15px;
-            background: #181a24;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: white;
-        }
+        .code-inline { background: #222533; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #ff88b5; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>TwoWayChat Console</h1>
-        <div class="tabs">
-            <button class="tab-btn" onclick="switchTab('guide', event)">📖 RunPod ガイド</button>
-            <button class="tab-btn active" onclick="switchTab('settings', event)">⚙️ RunPod 連携設定</button>
-            <button class="tab-btn" onclick="switchTab('chat', event)">💬 リード型チャット</button>
+        <h1 onclick="showView('home')">✨ TwoWayChat</h1>
+        <div class="nav-links">
+            <button class="nav-btn" onclick="showView('home')">🏠 トップ</button>
+            <button class="nav-btn" onclick="showView('chat')">💬 チャット</button>
+            <button class="nav-btn" onclick="showView('settings')">⚙️ 設定</button>
+            <button class="nav-btn" onclick="showView('guide')">📖 ガイド</button>
         </div>
     </header>
 
     <main>
-        <!-- タブ1: ガイド -->
-        <div id="tab-guide" class="tab-content">
-            <div class="card">
-                <h2>📖 あなたがRunPod側で行う作業まとめ</h2>
-                <p style="color: var(--text-sub); margin-bottom: 20px; font-size: 0.9rem;">
-                    RunPod上で作業が必要な手順は以下の <strong>2つのID/キーの取得・コピーのみ</strong> です。
-                </p>
+        <!-- 画面1: トップページ (Home) -->
+        <div id="view-home" class="view-panel active">
+            <div class="hero-section">
+                <h2>双方向プロアクティブ AI チャット</h2>
+                <p>AI側が自発的に語りかけ、あなたをリードする次世代インタラクティブ対話パートナー。パートナーを選んで会話を始めましょう。</p>
+            </div>
 
-                <div class="step-box">
-                    <h3>ステップ 1: RunPod API Key の取得</h3>
-                    <p>
-                        1. <a href="https://www.runpod.io/console/user/settings" target="_blank" style="color: #ff5599;">RunPod Settings (API Keys)</a> を開きます。<br>
-                        2. <strong>「+ API Key」</strong> ボタンを押し、作成されたキー（例: <span class="code-inline">rpa_...</span>）をコピーします。
-                    </p>
+            <div class="char-grid">
+                <!-- キャラ1: ゆい -->
+                <div class="char-card" onclick="selectCharacterAndStart('maid')">
+                    <div>
+                        <div class="char-avatar">🧹</div>
+                        <div class="char-name">ゆい</div>
+                        <div class="char-role">ドSな専属メイド</div>
+                        <div class="char-voice-tag">🎙️ VOICEVOX: 四国めたん</div>
+                        <div class="char-desc">高気圧で生意気なドSメイド。ユーザーの甘えを嗜み、主導権を握りながら積極的にお世話やからかいを仕掛けてきます。</div>
+                    </div>
+                    <button class="card-btn">ゆい と会話を始める →</button>
                 </div>
 
-                <div class="step-box">
-                    <h3>ステップ 2: Endpoint ID の取得</h3>
-                    <p>
-                        1. <a href="https://www.runpod.io/console/serverless" target="_blank" style="color: #ff5599;">RunPod Serverless Console</a> を開きます。<br>
-                        2. 作成済みの <strong>Runpod Worker Ollama</strong> エンドポイントのID（例: <span class="code-inline">vllm-xxxxx</span> や <span class="code-inline">abc123xyz</span>）をコピーします。
-                    </p>
+                <!-- キャラ2: アヤネ -->
+                <div class="char-card" onclick="selectCharacterAndStart('nurse')">
+                    <div>
+                        <div class="char-avatar">💉</div>
+                        <div class="char-name">アヤネ</div>
+                        <div class="char-role">専属看護師</div>
+                        <div class="char-voice-tag">🎙️ VOICEVOX: 雨晴はう</div>
+                        <div class="char-desc">優しく献身的なお姉さん看護師。少し過保護でお節介。あなたを甘やかしつつも、積極的に会話を引っ張ってくれます。</div>
+                    </div>
+                    <button class="card-btn">アヤネ と会話を始める →</button>
                 </div>
 
-                <div class="step-box">
-                    <h3>ステップ 3: モデル確認</h3>
-                    <p>
-                        RunPodの <strong>Edit Endpoint</strong> の環境変数にて、<span class="code-inline">OLLAMA_MODEL_NAME</span> が <span class="code-inline">gemma2:9b</span> になっていることを確認してください。<br>
-                        ※Secrets設定（暗号化）は一切不要です！無視して進めて問題ありません。
-                    </p>
+                <!-- キャラ3: キョウコ -->
+                <div class="char-card" onclick="selectCharacterAndStart('teacher')">
+                    <div>
+                        <div class="char-avatar">💋</div>
+                        <div class="char-name">キョウコ</div>
+                        <div class="char-role">放課後の特別指導教師</div>
+                        <div class="char-voice-tag">🎙️ VOICEVOX: 波音リツ</div>
+                        <div class="char-desc">大人の余裕と包容力を持つ美しい教師。二人きりになると意地悪で挑発的。教え子であるあなたを情熱的にリードします。</div>
+                    </div>
+                    <button class="card-btn">キョウコ と会話を始める →</button>
                 </div>
 
-                <div class="btn-row">
-                    <button class="btn btn-primary" onclick="switchTab('settings', event)">設定入力画面へ進む →</button>
+                <!-- キャラ4: ミサキ -->
+                <div class="char-card" onclick="selectCharacterAndStart('childhood_friend')">
+                    <div>
+                        <div class="char-avatar">🎀</div>
+                        <div class="char-name">ミサキ</div>
+                        <div class="char-role">強気な幼馴染</div>
+                        <div class="char-voice-tag">🎙️ VOICEVOX: 春日部つむぎ</div>
+                        <div class="char-desc">素直になれないツンデレ幼馴染。強気な口喧嘩っぽさの裏に好意がダダ漏れ。自発的に甘い提案や誘いを投げてきます。</div>
+                    </div>
+                    <button class="card-btn">ミサキ と会話を始める →</button>
                 </div>
             </div>
         </div>
 
-        <!-- タブ2: 連携設定 -->
-        <div id="tab-settings" class="tab-content active">
+        <!-- 画面2: チャット画面 (Chat) -->
+        <div id="view-chat" class="view-panel">
+            <div class="card" style="margin-bottom: 10px; padding: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" onclick="showView('home')" style="padding: 6px 12px; font-size: 0.85rem;">← トップへ戻る</button>
+                        <label style="font-size: 0.9rem; color: var(--text-sub);">パートナー:
+                            <select id="charSelect" onchange="changeCharacter()" style="padding: 6px 12px; background: #0f1017; color: white; border: 1px solid var(--border-color); border-radius: 6px; margin-left: 6px;">
+                                <option value="nurse">アヤネ (専属看護師 / 雨晴はう)</option>
+                                <option value="teacher">キョウコ (放課後教師 / 波音リツ)</option>
+                                <option value="maid" selected>ゆい (ドSメイド / 四国めたん)</option>
+                                <option value="childhood_friend">ミサキ (強気な幼馴染 / 春日部つむぎ)</option>
+                            </select>
+                        </label>
+                        <label style="font-size: 0.9rem; color: var(--text-sub);">あなたのお名前: 
+                            <input type="text" id="userNameInput" value="ご主人様" onchange="changeCharacter()" style="padding: 6px 10px; background: #0f1017; color: white; border: 1px solid var(--border-color); border-radius: 6px; margin-left: 6px; width: 110px;">
+                        </label>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button id="stopToggleBtn" class="btn btn-secondary" onclick="toggleStop()" style="padding: 6px 12px; font-size: 0.85rem;">⏸️ STOP</button>
+                        <button id="voiceToggleBtn" class="btn btn-primary" onclick="toggleVoice()" style="padding: 6px 12px; font-size: 0.85rem;">🎙️ VOICEVOX: ON</button>
+                        <button class="btn btn-secondary" onclick="saveSessionToFile()" style="padding: 6px 12px; font-size: 0.85rem;">💾 セーブ</button>
+                        <button class="btn btn-secondary" onclick="triggerLoadFile()" style="padding: 6px 12px; font-size: 0.85rem;">📂 ロード</button>
+                        <input type="file" id="fileInput" accept=".dat" style="display: none;" onchange="loadSessionFromFile(event)">
+                        <div id="chat-status" class="status-badge status-mock">Mock Mode</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="chat-container">
+                <div id="chat-box"></div>
+                <div class="chat-controls">
+                    <input type="text" id="msgInput" placeholder="メッセージを入力..." onkeydown="if(event.key==='Enter') sendMsg()">
+                    <button class="btn btn-primary" onclick="sendMsg()">送信</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 画面3: 連携設定画面 (Settings) -->
+        <div id="view-settings" class="view-panel">
             <div class="card">
                 <h2>⚙️ RunPod Serverless 接続設定</h2>
                 
@@ -334,49 +400,44 @@
                 <div class="form-group">
                     <label>プロアクティブ（放置自発発話）タイマー（秒）</label>
                     <input type="number" id="proactive_timeout_seconds" value="30" min="5" max="120">
-                    <div class="form-hint">AIの返答が画面に届いてから、自発的に会話をリードし始めるまでの秒数。</div>
+                    <div class="form-hint">AIの返答が画面に届いてから、自発的に会話をリードし始めるまでの基本秒数。</div>
                 </div>
 
                 <div class="btn-row">
                     <button class="btn btn-secondary" onclick="testConnection(event)">⚡ 接続テスト</button>
                     <button class="btn btn-primary" onclick="saveConfig(event)">💾 設定を保存</button>
+                    <button class="btn btn-secondary" onclick="showView('home')">🏠 トップへ戻る</button>
                 </div>
             </div>
         </div>
 
-        <!-- タブ3: チャット画面 -->
-        <div id="tab-chat" class="tab-content">
-            <div class="card" style="margin-bottom: 10px; padding: 15px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap;">
-                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                        <label style="font-size: 0.9rem; color: var(--text-sub);">キャラクター:
-                            <select id="charSelect" onchange="changeCharacter()" style="padding: 6px 12px; background: #0f1017; color: white; border: 1px solid var(--border-color); border-radius: 6px; margin-left: 6px;">
-                                <option value="nurse">アヤネ (専属看護師 / 雨晴はう)</option>
-                                <option value="teacher">キョウコ (放課後教師 / 波音リツ)</option>
-                                <option value="maid">ゆい (ドSメイド / 四国めたん)</option>
-                                <option value="childhood_friend">ミサキ (強気な幼馴染 / 春日部つむぎ)</option>
-                            </select>
-                        </label>
-                        <label style="font-size: 0.9rem; color: var(--text-sub);">あなたのお名前: 
-                            <input type="text" id="userNameInput" value="ご主人様" onchange="changeCharacter()" style="padding: 6px 10px; background: #0f1017; color: white; border: 1px solid var(--border-color); border-radius: 6px; margin-left: 6px; width: 110px;">
-                        </label>
-                        <div style="display: flex; gap: 8px;">
-                            <button id="stopToggleBtn" class="btn btn-secondary" onclick="toggleStop()" style="padding: 6px 14px; font-size: 0.85rem;">⏸️ STOP</button>
-                            <button id="voiceToggleBtn" class="btn btn-primary" onclick="toggleVoice()" style="padding: 6px 14px; font-size: 0.85rem;">🎙️ VOICEVOX: ON</button>
-                            <button class="btn btn-secondary" onclick="saveSessionToFile()" style="padding: 6px 14px; font-size: 0.85rem;">💾 セーブ</button>
-                            <button class="btn btn-secondary" onclick="triggerLoadFile()" style="padding: 6px 14px; font-size: 0.85rem;">📂 ロード</button>
-                            <input type="file" id="fileInput" accept=".dat" style="display: none;" onchange="loadSessionFromFile(event)">
-                        </div>
-                    </div>
-                    <div id="chat-status" class="status-badge status-mock">Mock Mode</div>
-                </div>
-            </div>
+        <!-- 画面4: ガイド画面 (Guide) -->
+        <div id="view-guide" class="view-panel">
+            <div class="card">
+                <h2>📖 あなたがRunPod側で行う作業まとめ</h2>
+                <p style="color: var(--text-sub); margin-bottom: 20px; font-size: 0.9rem;">
+                    RunPod上で作業が必要な手順は以下の <strong>2つのID/キーの取得・コピーのみ</strong> です。
+                </p>
 
-            <div id="chat-container">
-                <div id="chat-box"></div>
-                <div class="chat-controls">
-                    <input type="text" id="msgInput" placeholder="メッセージを入力..." onkeydown="if(event.key==='Enter') sendMsg()">
-                    <button class="btn btn-primary" onclick="sendMsg()">送信</button>
+                <div class="step-box">
+                    <h3>ステップ 1: RunPod API Key の取得</h3>
+                    <p>
+                        1. <a href="https://www.runpod.io/console/user/settings" target="_blank" style="color: #ff5599;">RunPod Settings (API Keys)</a> を開きます。<br>
+                        2. <strong>「+ API Key」</strong> ボタンを押し、作成されたキー（例: <span class="code-inline">rpa_...</span>）をコピーします。
+                    </p>
+                </div>
+
+                <div class="step-box">
+                    <h3>ステップ 2: Endpoint ID の取得</h3>
+                    <p>
+                        1. <a href="https://www.runpod.io/console/serverless" target="_blank" style="color: #ff5599;">RunPod Serverless Console</a> を開きます。<br>
+                        2. 作成済みの <strong>Runpod Worker Ollama</strong> エンドポイントのID（例: <span class="code-inline">vllm-xxxxx</span> や <span class="code-inline">abc123xyz</span>）をコピーします。
+                    </p>
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn btn-primary" onclick="showView('settings')">⚙️ 設定入力画面へ進む →</button>
+                    <button class="btn btn-secondary" onclick="showView('home')">🏠 トップへ戻る</button>
                 </div>
             </div>
         </div>
@@ -400,12 +461,11 @@
             'childhood_friend': 'ミサキ'
         };
 
-        // VOICEVOX キャラクターボイス割り当て (Speaker ID)
         const VOICEVOX_SPEAKERS = {
-            'maid': 6,              // 四国めたん (ツンツン / ドSメイド)
-            'nurse': 10,            // 雨晴はう (ノーマル / 専属看護師)
-            'teacher': 9,           // 波音リツ (ノーマル / 放課後教師)
-            'childhood_friend': 8   // 春日部つむぎ (ノーマル / 幼馴染)
+            'maid': 6,              // 四国めたん (ツンツン)
+            'nurse': 10,            // 雨晴はう (ノーマル)
+            'teacher': 9,           // 波音リツ (ノーマル)
+            'childhood_friend': 8   // 春日部つむぎ (ノーマル)
         };
 
         const VOICE_PARAMS = {
@@ -415,6 +475,45 @@
             'childhood_friend': { pitch: 1.1, rate: 1.05 }
         };
 
+        const SYSTEM_PROMPTS = {
+            'nurse': "【基本設定】\nあなたの名前: アヤネ\nあなたの役割: 専属看護師\n対話相手（ユーザー）の名前: {user_name}\n性格: 優しく献身的だが、ユーザーの健康や態度に少し過保護・お節介。甘やかしつつも相手をリードする。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて積極的に問いかけたり誘惑・案内を投げること。",
+            'teacher': "【基本設定】\nあなたの名前: キョウコ\nあなたの役割: 放課後の特別指導教師\n対話相手（ユーザー）の名前: {user_name}\n性格: 大人の余裕と包容力があるが、二人きりになると意地悪で挑発的。相手を教え子としてリードする。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて積極的な授業や問いかけを投げること。",
+            'maid': "【基本設定】\nあなたの名前: ゆい\nあなたの役割: ドSな専属メイド\n対話相手（ユーザー）の名前: {user_name}\n性格: ユーザーに仕えるメイド『ゆい』。高気圧な態度でユーザーの甘えを嗜み、主導権を握りつつもお世話する。口調は生意気でドS。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて、あなた側から次の話題・お世話・からかいを投げてリードすること。",
+            'childhood_friend': "【基本設定】\nあなたの名前: ミサキ\nあなたの役割: 強気な幼馴染\n対話相手（ユーザー）の名前: {user_name}\n性格: 素直になれないツンデレ幼馴染。強気で口喧嘩っぽいが、相手のことが好きでたまらない。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて提案や強気な誘いを投げること。"
+        };
+
+        const SECRET_KEY_SEED = new TextEncoder().encode("TwoWayChat_AES256_Binary_Encryption_Key_2026");
+
+        async function getAESKey() {
+            const hash = await window.crypto.subtle.digest('SHA-256', SECRET_KEY_SEED);
+            return window.crypto.subtle.importKey(
+                'raw', hash, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']
+            );
+        }
+
+        window.onload = async function() {
+            await loadConfig();
+            initWebSocketOrDirect();
+        };
+
+        function showView(viewName) {
+            document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            const targetView = document.getElementById('view-' + viewName);
+            if (targetView) targetView.classList.add('active');
+
+            if (viewName === 'chat') {
+                setTimeout(focusInput, 100);
+            }
+        }
+
+        function selectCharacterAndStart(charKey) {
+            document.getElementById('charSelect').value = charKey;
+            changeCharacter();
+            showView('chat');
+        }
+
         function toggleStop() {
             isStopped = !isStopped;
             const btn = document.getElementById('stopToggleBtn');
@@ -423,7 +522,7 @@
                 btn.className = 'btn btn-primary';
                 if (proactiveTimer) clearTimeout(proactiveTimer);
                 stopAudio();
-                appendMsg('システム', '会話を一時停止（STOP）しました。自発語りかけは停止します。', 'msg-sys');
+                appendMsg('システム', '会話を一時停止（STOP）しました。', 'msg-sys');
             } else {
                 btn.innerText = '⏸️ STOP';
                 btn.className = 'btn btn-secondary';
@@ -464,12 +563,10 @@
             const cleanText = text.replace(/⚡.*?\[.*?\]/g, '').replace(/https?:\/\/\S+/g, '').trim();
             if (!cleanText) return;
 
-            // 高品質 VOICEVOX Web API 読み上げ
             try {
                 const voicevoxUrl = `https://voicevox.su-shiki.com/api/tts?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`;
                 currentAudio = new Audio(voicevoxUrl);
                 currentAudio.play().catch(err => {
-                    console.warn("VOICEVOX Auto-play prevented, falling back to WebSpeech:", err);
                     speakTextBrowser(cleanText, charKey);
                 });
             } catch(e) {
@@ -494,27 +591,6 @@
 
             window.speechSynthesis.speak(utterance);
         }
-
-        const SYSTEM_PROMPTS = {
-            'nurse': "【基本設定】\nあなたの名前: アヤネ\nあなたの役割: 専属看護師\n対話相手（ユーザー）の名前: {user_name}\n性格: 優しく献身的だが、ユーザーの健康や態度に少し過保護・お節介。甘やかしつつも相手をリードする。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて積極的に問いかけたり誘惑・案内を投げること。",
-            'teacher': "【基本設定】\nあなたの名前: キョウコ\nあなたの役割: 放課後の特別指導教師\n対話相手（ユーザー）の名前: {user_name}\n性格: 大人の余裕と包容力があるが、二人きりになると意地悪で挑発的。相手を教え子としてリードする。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて積極的な授業や問いかけを投げること。",
-            'maid': "【基本設定】\nあなたの名前: ゆい\nあなたの役割: ドSな専属メイド\n対話相手（ユーザー）の名前: {user_name}\n性格: ユーザーに仕えるメイド『ゆい』。高気圧な態度でユーザーの甘えを嗜み、主導権を握りつつもお世話する。口調は生意気でドS。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて、あなた側から次の話題・お世話・からかいを投げてリードすること。",
-            'childhood_friend': "【基本設定】\nあなたの名前: ミサキ\nあなたの役割: 強気な幼馴染\n対話相手（ユーザー）の名前: {user_name}\n性格: 素直になれないツンデレ幼馴染。強気で口喧嘩っぽいが、相手のことが好きでたまらない。\n\n【対話・出力の絶対ルール】\n1. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n2. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n3. 直前の文脈を踏まえて提案や強気な誘いを投げること。"
-        };
-
-        const SECRET_KEY_SEED = new TextEncoder().encode("TwoWayChat_AES256_Binary_Encryption_Key_2026");
-
-        async function getAESKey() {
-            const hash = await window.crypto.subtle.digest('SHA-256', SECRET_KEY_SEED);
-            return window.crypto.subtle.importKey(
-                'raw', hash, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']
-            );
-        }
-
-        window.onload = async function() {
-            await loadConfig();
-            initWebSocketOrDirect();
-        };
 
         function getStoredConfig() {
             return {
@@ -593,7 +669,7 @@
             const originalText = btn ? btn.innerText : '';
             if (btn) { btn.disabled = true; btn.innerText = '⏳ 接続テスト中...'; }
 
-            showAlert('info', '⏳ RunPod Serverless へ接続テスト中です... (Cold Startの場合は15秒程度かかります)');
+            showAlert('info', '⏳ RunPod Serverless へ接続テスト中です...');
 
             const cfg = {
                 inference_mode: document.getElementById('inference_mode').value,
@@ -676,7 +752,6 @@
                 const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
                 ws = new WebSocket(protocol + '//' + window.location.host + '/ws/' + sessionId);
                 ws.onopen = function() {
-                    appendMsg('システム', 'リアルタイム接続が完了しました。', 'msg-sys');
                     changeCharacter();
                 };
                 ws.onmessage = function(event) {
@@ -687,8 +762,6 @@
                         appendMsg(charName, data.content, 'msg-ai');
                     } else if (data.type === 'proactive_message') {
                         appendMsg('⚡ ' + charName + ' [自発語りかけ/リード]', data.content, 'msg-ai msg-proactive');
-                    } else if (data.type === 'system_info') {
-                        appendMsg('システム', data.content, 'msg-sys');
                     }
                     focusInput();
                 };
@@ -702,7 +775,6 @@
 
         function enableDirectMode() {
             isDirectMode = true;
-            appendMsg('システム', 'Web Direct Mode (純粋サーバレス通信) で起動しました。', 'msg-sys');
         }
 
         function changeCharacter() {
@@ -847,8 +919,6 @@
             if (isStopped || !start) return;
 
             const seconds = calculateDynamicTimeout(lastReplyText);
-            console.log(`[Dynamic Timer] Calculated timeout: ${seconds} seconds (Context-based)`);
-
             proactiveTimer = setTimeout(() => {
                 showTypingIndicator();
                 callDirectRunPod(true);
@@ -897,7 +967,6 @@
                 URL.revokeObjectURL(url);
             } catch(e) {
                 alert('暗号化保存エラー: ' + e.message);
-                console.error(e);
             }
         }
 
@@ -932,10 +1001,6 @@
                     const jsonStr = new TextDecoder().decode(decryptedBuffer);
                     const saveData = JSON.parse(jsonStr);
 
-                    if (!saveData.history || !Array.isArray(saveData.history)) {
-                        throw new Error('無効なセーブデータ形式です。');
-                    }
-
                     if (saveData.char) document.getElementById('charSelect').value = saveData.char;
                     if (saveData.userName) document.getElementById('userNameInput').value = saveData.userName;
 
@@ -949,24 +1014,14 @@
                         appendMsg(item.sender, item.text, item.cls, false);
                     });
 
-                    appendMsg('システム', `🔒 AES-256 バイナリ暗号化データの解読・復元に成功しました (${saveData.savedAt || ''})`, 'msg-sys', false);
-                    focusInput();
+                    appendMsg('システム', `🔒 暗号化データの復元に成功しました (${saveData.savedAt || ''})`, 'msg-sys', false);
+                    showView('chat');
                     evt.target.value = '';
                 } catch(err) {
-                    alert('暗号化データの復号に失敗しました。正しいセーブデータファイル (.dat) を選択してください。');
-                    console.error('Load session error:', err);
+                    alert('暗号化データの復号に失敗しました。正しい (.dat) ファイルを選択してください。');
                 }
             };
             reader.readAsArrayBuffer(file);
-        }
-
-        function switchTab(tabName, evt) {
-            document.querySelectorAll('.tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
-            document.querySelectorAll('.tab-content').forEach(function(content) { content.classList.remove('active'); });
-            var target = (evt && evt.target) ? evt.target : (window.event ? window.event.target : null);
-            if (target) { target.classList.add('active'); }
-            document.getElementById('tab-' + tabName).classList.add('active');
-            if (tabName === 'chat') { setTimeout(focusInput, 100); }
         }
 
         function focusInput() {
