@@ -351,10 +351,10 @@
                     <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
                         <label style="font-size: 0.9rem; color: var(--text-sub);">キャラクター:
                             <select id="charSelect" onchange="changeCharacter()" style="padding: 6px 12px; background: #0f1017; color: white; border: 1px solid var(--border-color); border-radius: 6px; margin-left: 6px;">
-                                <option value="nurse">アヤネ (専属看護師)</option>
-                                <option value="teacher">キョウコ (放課後教師)</option>
-                                <option value="maid">ゆい (ドSメイド)</option>
-                                <option value="childhood_friend">ミサキ (強気な幼馴染)</option>
+                                <option value="nurse">アヤネ (専属看護師 / 雨晴はう)</option>
+                                <option value="teacher">キョウコ (放課後教師 / 波音リツ)</option>
+                                <option value="maid">ゆい (ドSメイド / 四国めたん)</option>
+                                <option value="childhood_friend">ミサキ (強気な幼馴染 / 春日部つむぎ)</option>
                             </select>
                         </label>
                         <label style="font-size: 0.9rem; color: var(--text-sub);">あなたのお名前: 
@@ -362,7 +362,7 @@
                         </label>
                         <div style="display: flex; gap: 8px;">
                             <button id="stopToggleBtn" class="btn btn-secondary" onclick="toggleStop()" style="padding: 6px 14px; font-size: 0.85rem;">⏸️ STOP</button>
-                            <button id="voiceToggleBtn" class="btn btn-primary" onclick="toggleVoice()" style="padding: 6px 14px; font-size: 0.85rem;">🔊 音声: ON</button>
+                            <button id="voiceToggleBtn" class="btn btn-primary" onclick="toggleVoice()" style="padding: 6px 14px; font-size: 0.85rem;">🎙️ VOICEVOX: ON</button>
                             <button class="btn btn-secondary" onclick="saveSessionToFile()" style="padding: 6px 14px; font-size: 0.85rem;">💾 セーブ</button>
                             <button class="btn btn-secondary" onclick="triggerLoadFile()" style="padding: 6px 14px; font-size: 0.85rem;">📂 ロード</button>
                             <input type="file" id="fileInput" accept=".dat" style="display: none;" onchange="loadSessionFromFile(event)">
@@ -391,6 +391,7 @@
         let directConversationHistory = [];
         let isVoiceEnabled = true;
         let isStopped = false;
+        let currentAudio = null;
 
         const CHAR_MAP = {
             'nurse': 'アヤネ',
@@ -399,11 +400,19 @@
             'childhood_friend': 'ミサキ'
         };
 
+        // VOICEVOX キャラクターボイス割り当て (Speaker ID)
+        const VOICEVOX_SPEAKERS = {
+            'maid': 6,              // 四国めたん (ツンツン / ドSメイド)
+            'nurse': 10,            // 雨晴はう (ノーマル / 専属看護師)
+            'teacher': 9,           // 波音リツ (ノーマル / 放課後教師)
+            'childhood_friend': 8   // 春日部つむぎ (ノーマル / 幼馴染)
+        };
+
         const VOICE_PARAMS = {
-            'nurse': { pitch: 1.05, rate: 0.95 },
-            'teacher': { pitch: 0.85, rate: 0.9 },
-            'maid': { pitch: 1.25, rate: 1.1 },
-            'childhood_friend': { pitch: 1.15, rate: 1.15 }
+            'nurse': { pitch: 1.0, rate: 0.95 },
+            'teacher': { pitch: 0.9, rate: 0.9 },
+            'maid': { pitch: 1.15, rate: 1.0 },
+            'childhood_friend': { pitch: 1.1, rate: 1.05 }
         };
 
         function toggleStop() {
@@ -413,7 +422,7 @@
                 btn.innerText = '▶️ START';
                 btn.className = 'btn btn-primary';
                 if (proactiveTimer) clearTimeout(proactiveTimer);
-                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                stopAudio();
                 appendMsg('システム', '会話を一時停止（STOP）しました。自発語りかけは停止します。', 'msg-sys');
             } else {
                 btn.innerText = '⏸️ STOP';
@@ -427,36 +436,61 @@
             isVoiceEnabled = !isVoiceEnabled;
             const btn = document.getElementById('voiceToggleBtn');
             if (isVoiceEnabled) {
-                btn.innerText = '🔊 音声: ON';
+                btn.innerText = '🎙️ VOICEVOX: ON';
                 btn.className = 'btn btn-primary';
-                speakText("音声読み上げを有効にしました。");
+                speakText("ボイスボックス音声読み上げを有効にしました。");
             } else {
-                btn.innerText = '🔇 音声: OFF';
+                btn.innerText = '🔇 VOICEVOX: OFF';
                 btn.className = 'btn btn-secondary';
-                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                stopAudio();
             }
         }
 
+        function stopAudio() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        }
+
         function speakText(text) {
-            if (!isVoiceEnabled || !('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
+            if (!isVoiceEnabled) return;
+            stopAudio();
 
             const charKey = document.getElementById('charSelect').value;
-            const params = VOICE_PARAMS[charKey] || { pitch: 1.0, rate: 1.0 };
+            const speakerId = VOICEVOX_SPEAKERS[charKey] || 6;
 
             const cleanText = text.replace(/⚡.*?\[.*?\]/g, '').replace(/https?:\/\/\S+/g, '').trim();
             if (!cleanText) return;
 
+            // 高品質 VOICEVOX Web API 読み上げ
+            try {
+                const voicevoxUrl = `https://voicevox.su-shiki.com/api/tts?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`;
+                currentAudio = new Audio(voicevoxUrl);
+                currentAudio.play().catch(err => {
+                    console.warn("VOICEVOX Auto-play prevented, falling back to WebSpeech:", err);
+                    speakTextBrowser(cleanText, charKey);
+                });
+            } catch(e) {
+                speakTextBrowser(cleanText, charKey);
+            }
+        }
+
+        function speakTextBrowser(cleanText, charKey) {
+            if (!('speechSynthesis' in window)) return;
+            const params = VOICE_PARAMS[charKey] || { pitch: 1.0, rate: 1.0 };
             const utterance = new SpeechSynthesisUtterance(cleanText);
             utterance.lang = 'ja-JP';
             utterance.pitch = params.pitch;
             utterance.rate = params.rate;
 
             const voices = window.speechSynthesis.getVoices();
-            const jaVoice = voices.find(v => v.lang.includes('ja') || v.lang.includes('JA'));
-            if (jaVoice) {
-                utterance.voice = jaVoice;
-            }
+            const jaVoices = voices.filter(v => v.lang.includes('ja') || v.lang.includes('JA'));
+            let selectedVoice = jaVoices.find(v => 
+                v.name.includes('Natural') || v.name.includes('Online') || v.name.includes('Google') || v.name.includes('Premium') || v.name.includes('Neural')
+            );
+            if (selectedVoice) utterance.voice = selectedVoice;
 
             window.speechSynthesis.speak(utterance);
         }
