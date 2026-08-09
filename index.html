@@ -251,7 +251,7 @@
         <!-- 画面3: 連携設定画面 (Settings) -->
         <div id="view-settings" class="view-panel">
             <div class="card">
-                <h2>⚙️ RunPod Serverless 接続設定</h2>
+                <h2>⚙️ RunPod Serverless & VOICEVOX 接続設定</h2>
                 
                 <div id="alert-box" style="display: none; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem;"></div>
 
@@ -274,6 +274,12 @@
                     <label>RunPod Endpoint ID</label>
                     <input type="text" id="runpod_endpoint_id" placeholder="例: vllm-abc123xyz または abc123xyz">
                     <div class="form-hint">Serverless Endpoints 一覧に表示されているエンドポイントID。</div>
+                </div>
+
+                <div class="form-group">
+                    <label>🎙️ VOICEVOX サーバー URL</label>
+                    <input type="text" id="voicevox_server_url" value="http://localhost:50021" placeholder="例: http://localhost:50021 または http://192.168.x.x:50021">
+                    <div class="form-hint">自前のPCで動いている VOICEVOX アプリ/サーバーのURL。PCブラウザの場合は <span class="code-inline">http://localhost:50021</span> で爆速動作します！</div>
                 </div>
 
                 <div class="form-group">
@@ -394,13 +400,7 @@
         }
 
         function selectCharacterAndStart(charKey) {
-            // モバイルブラウザのオーディオ・コンテキストのアンロック
             stopAudio();
-            try {
-                const dummyAudio = new Audio();
-                dummyAudio.play().catch(() => {});
-            } catch(e) {}
-
             document.getElementById('charSelect').value = charKey;
             const labelMap = {
                 'maid': '🧹 ゆい (ドSメイド)',
@@ -411,7 +411,6 @@
             const displayEl = document.getElementById('currentCharDisplay');
             if (displayEl) displayEl.innerText = labelMap[charKey] || CHAR_MAP[charKey];
 
-            // 【ご要望対応】トップから新キャラを選択したら前の会話ログ・履歴を完全クリア！
             const chatBox = document.getElementById('chat-box');
             if (chatBox) chatBox.innerHTML = '';
             sessionHistoryBuffer = [];
@@ -455,14 +454,17 @@
 
         function stopAudio() {
             if (currentAudio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
+                try {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                } catch(e) {}
                 currentAudio = null;
             }
             if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         }
 
-        function speakText(text) {
+        // 自前 VOICEVOX サーバー (`http://localhost:50021`) & 公開 Web API の両対応エンジン
+        async function speakText(text) {
             if (!isVoiceEnabled) return;
             stopAudio();
 
@@ -472,17 +474,76 @@
             const cleanText = text.replace(/⚡.*?\[.*?\]/g, '').replace(/https?:\/\/\S+/g, '').trim();
             if (!cleanText) return;
 
-            // VOICEVOX 日本語音声合成 URL
-            const voicevoxUrl = `https://voicevox.su-shiki.com/api/tts?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`;
-            
-            currentAudio = new Audio();
-            currentAudio.src = voicevoxUrl;
-            currentAudio.play().then(() => {
-                console.log("[VOICEVOX] Playing anime character voice successfully!");
-            }).catch(err => {
-                console.warn("[VOICEVOX Autoplay / CORS fallback to WebSpeech]:", err);
+            const customVoicevoxUrl = (document.getElementById('voicevox_server_url') ? document.getElementById('voicevox_server_url').value.trim() : '') || 'http://localhost:50021';
+
+            // エンドポイント試行リスト（1: 自前ローカルPCサーバー, 2: 無料Web API メイン, 3: 無料Web API ミラー）
+            const endpoints = [
+                {
+                    name: "自前 VOICEVOX サーバー",
+                    type: "local",
+                    url: customVoicevoxUrl
+                },
+                {
+                    name: "Web API (Su-shiki)",
+                    type: "public",
+                    url: `https://voicevox.su-shiki.com/api/tts?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`
+                },
+                {
+                    name: "Web API (TikTik)",
+                    type: "public",
+                    url: `https://vvox.tiktik.work/api/v1/synthesis?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`
+                }
+            ];
+
+            let played = false;
+
+            for (let ep of endpoints) {
+                try {
+                    console.log(`[VOICEVOX Engine] Trying ${ep.name}...`);
+
+                    if (ep.type === "local") {
+                        // 自前 VOICEVOX サーバー 2段階生成 API (audio_query -> synthesis)
+                        const queryRes = await fetch(`${ep.url}/audio_query?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`, {
+                            method: 'POST'
+                        });
+                        if (!queryRes.ok) throw new Error("Local query failed");
+                        const queryJson = await queryRes.json();
+
+                        const synthRes = await fetch(`${ep.url}/synthesis?speaker=${speakerId}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(queryJson)
+                        });
+                        if (!synthRes.ok) throw new Error("Local synthesis failed");
+
+                        const blob = await synthRes.blob();
+                        const audioUrl = URL.createObjectURL(blob);
+                        currentAudio = new Audio(audioUrl);
+                        await currentAudio.play();
+                        console.log("[VOICEVOX SUCCESS] Played via Local PC VOICEVOX Engine!");
+                        played = true;
+                        break;
+                    } else {
+                        // パブリック Web API 直接取得
+                        const res = await fetch(ep.url);
+                        if (!res.ok) throw new Error("Public API failed");
+                        const blob = await res.blob();
+                        const audioUrl = URL.createObjectURL(blob);
+                        currentAudio = new Audio(audioUrl);
+                        await currentAudio.play();
+                        console.log(`[VOICEVOX SUCCESS] Played via ${ep.name}!`);
+                        played = true;
+                        break;
+                    }
+                } catch(err) {
+                    console.warn(`[VOICEVOX Engine Warning] ${ep.name} failed:`, err);
+                }
+            }
+
+            if (!played) {
+                console.log("[VOICEVOX Fallback] WebSpeech API triggered.");
                 speakTextBrowser(cleanText, charKey);
-            });
+            }
         }
 
         function speakTextBrowser(cleanText, charKey) {
@@ -508,6 +569,7 @@
                 inference_mode: localStorage.getItem('cfg_inference_mode') || 'runpod',
                 runpod_api_key: localStorage.getItem('cfg_runpod_api_key') || '',
                 runpod_endpoint_id: localStorage.getItem('cfg_runpod_endpoint_id') || '',
+                voicevox_server_url: localStorage.getItem('cfg_voicevox_server_url') || 'http://localhost:50021',
                 ollama_model_name: localStorage.getItem('cfg_ollama_model_name') || 'gemma2:9b',
                 proactive_timeout_seconds: parseFloat(localStorage.getItem('cfg_proactive_timeout') || '30')
             };
@@ -517,6 +579,7 @@
             localStorage.setItem('cfg_inference_mode', cfg.inference_mode);
             localStorage.setItem('cfg_runpod_api_key', cfg.runpod_api_key);
             localStorage.setItem('cfg_runpod_endpoint_id', cfg.runpod_endpoint_id);
+            localStorage.setItem('cfg_voicevox_server_url', cfg.voicevox_server_url);
             localStorage.setItem('cfg_ollama_model_name', cfg.ollama_model_name);
             localStorage.setItem('cfg_proactive_timeout', cfg.proactive_timeout_seconds);
         }
@@ -529,6 +592,7 @@
                 document.getElementById('inference_mode').value = data.inference_mode;
                 document.getElementById('runpod_api_key').value = data.runpod_api_key;
                 document.getElementById('runpod_endpoint_id').value = data.runpod_endpoint_id;
+                document.getElementById('voicevox_server_url').value = data.voicevox_server_url || 'http://localhost:50021';
                 document.getElementById('ollama_model_name').value = data.ollama_model_name;
                 document.getElementById('proactive_timeout_seconds').value = data.proactive_timeout_seconds;
                 updateStatusBadge(data.inference_mode);
@@ -538,6 +602,7 @@
                 document.getElementById('inference_mode').value = cfg.inference_mode;
                 document.getElementById('runpod_api_key').value = cfg.runpod_api_key;
                 document.getElementById('runpod_endpoint_id').value = cfg.runpod_endpoint_id;
+                document.getElementById('voicevox_server_url').value = cfg.voicevox_server_url;
                 document.getElementById('ollama_model_name').value = cfg.ollama_model_name;
                 document.getElementById('proactive_timeout_seconds').value = cfg.proactive_timeout_seconds;
                 updateStatusBadge(cfg.inference_mode);
@@ -553,6 +618,7 @@
                 inference_mode: document.getElementById('inference_mode').value,
                 runpod_api_key: document.getElementById('runpod_api_key').value.trim(),
                 runpod_endpoint_id: document.getElementById('runpod_endpoint_id').value.trim(),
+                voicevox_server_url: document.getElementById('voicevox_server_url').value.trim(),
                 ollama_model_name: document.getElementById('ollama_model_name').value.trim(),
                 proactive_timeout_seconds: parseFloat(document.getElementById('proactive_timeout_seconds').value)
             };
