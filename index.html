@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TwoWayChat - 双方向プロアクティブAIチャット</title>
+    <title>TwoWayChat - 双方向プロアクティブ AI 英会話チューター</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <meta name="robots" content="noindex, nofollow">
     <style>
@@ -42,7 +42,7 @@
         }
         header h1 {
             font-size: 1.25rem;
-            background: linear-gradient(135deg, #ff3377, #8a2be2);
+            background: linear-gradient(135deg, #00e5ff, #8a2be2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 800;
@@ -57,7 +57,7 @@
             background: #1c1e2e; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 14px; font-size: 0.85rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px;
         }
         .nav-btn:hover, .nav-btn.active {
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); color: white; border-color: transparent;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); color: white; border-color: transparent;
         }
 
         main {
@@ -69,9 +69,9 @@
 
         .hero-section { text-align: center; padding: 30px 10px 40px; }
         .hero-section h2 {
-            font-size: 2rem; font-weight: 800; margin-bottom: 10px; background: linear-gradient(135deg, #fff 30%, var(--accent-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 2rem; font-weight: 800; margin-bottom: 10px; background: linear-gradient(135deg, #fff 30%, var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .hero-section p { color: var(--text-sub); font-size: 1rem; max-width: 600px; margin: 0 auto 20px; }
+        .hero-section p { color: var(--text-sub); font-size: 1rem; max-width: 650px; margin: 0 auto 20px; line-height: 1.6; }
 
         .char-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 10px;
@@ -80,10 +80,10 @@
             background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
         }
         .char-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple)); opacity: 0; transition: opacity 0.3s;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); opacity: 0; transition: opacity 0.3s;
         }
         .char-card:hover {
-            transform: translateY(-6px); border-color: var(--accent-pink); box-shadow: 0 12px 30px rgba(255, 51, 119, 0.25);
+            transform: translateY(-6px); border-color: var(--accent-cyan); box-shadow: 0 12px 30px rgba(0, 229, 255, 0.25);
         }
         .char-card:hover::before { opacity: 1; }
 
@@ -92,11 +92,11 @@
         .char-role { font-size: 0.8rem; color: var(--accent-cyan); font-weight: 600; margin-bottom: 12px; }
         .char-desc { font-size: 0.88rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 20px; flex: 1; }
         .char-voice-tag {
-            font-size: 0.75rem; background: rgba(138, 43, 226, 0.2); color: #d8b4ff; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-bottom: 15px; border: 1px solid rgba(138, 43, 226, 0.4);
+            font-size: 0.75rem; background: rgba(0, 229, 255, 0.15); color: #80f0ff; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-bottom: 15px; border: 1px solid rgba(0, 229, 255, 0.3);
         }
 
         .card-btn {
-            width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); color: white; border: none; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: opacity 0.2s;
+            width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); color: white; border: none; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: opacity 0.2s;
         }
         .card-btn:hover { opacity: 0.9; }
 
@@ -110,12 +110,12 @@
         .form-group input, .form-group select {
             width: 100%; padding: 12px 15px; background: #0b0c12; border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 0.95rem;
         }
-        .form-group input:focus, .form-group select:focus { border-color: var(--accent-pink); outline: none; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--accent-cyan); outline: none; }
         .form-hint { font-size: 0.8rem; color: var(--text-sub); margin-top: 5px; }
 
         .btn-row { display: flex; gap: 12px; margin-top: 20px; }
         .btn { padding: 12px 24px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.95rem; }
-        .btn-primary { background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); color: white; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); color: white; }
         .btn-secondary { background: #222536; color: var(--text-main); border: 1px solid var(--border-color); }
         .btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
@@ -129,26 +129,26 @@
         }
         .msg { max-width: 82%; padding: 12px 16px; border-radius: 12px; font-size: 0.95rem; line-height: 1.5; }
         .msg-user { background: #1c3254; color: #e6f0ff; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .msg-ai { background: #331940; color: #fae8ff; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .msg-ai { background: #1a2a40; color: #e1f5fe; align-self: flex-start; border-bottom-left-radius: 2px; border-left: 3px solid var(--accent-cyan); }
         .msg-sys { align-self: center; background: rgba(255,255,255,0.05); color: var(--text-sub); font-size: 0.8rem; }
-        .sender-name { font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; opacity: 0.8; }
+        .sender-name { font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; opacity: 0.85; color: var(--accent-cyan); }
 
         .chat-controls { display: flex; gap: 10px; margin-top: 12px; }
         .chat-controls input { flex: 1; padding: 12px 15px; background: #141622; border: 1px solid var(--border-color); border-radius: 8px; color: white; }
 
-        .step-box { background: #11121a; border-left: 4px solid var(--accent-pink); padding: 15px 20px; border-radius: 0 8px 8px 0; margin-bottom: 15px; }
+        .step-box { background: #11121a; border-left: 4px solid var(--accent-cyan); padding: 15px 20px; border-radius: 0 8px 8px 0; margin-bottom: 15px; }
         .step-box h3 { font-size: 0.95rem; margin-bottom: 5px; color: #fff; }
         .step-box p { font-size: 0.85rem; color: var(--text-sub); line-height: 1.5; }
-        .code-inline { background: #222533; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #ff88b5; }
+        .code-inline { background: #222533; padding: 2px 6px; border-radius: 4px; font-family: monospace; color: #00e5ff; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1 onclick="showView('home')">✨ TwoWayChat</h1>
+        <h1 onclick="showView('home')">🎓 TwoWayChat - AI Tutor</h1>
         <div class="nav-links">
             <button class="nav-btn" onclick="showView('home')">🏠 トップ</button>
-            <button class="nav-btn" onclick="showView('chat')">💬 チャット</button>
+            <button class="nav-btn" onclick="showView('chat')">💬 レッスン</button>
             <button class="nav-btn" onclick="showView('settings')">⚙️ 設定</button>
             <button class="nav-btn" onclick="showView('guide')">📖 ガイド</button>
         </div>
@@ -158,57 +158,57 @@
         <!-- 画面1: トップページ (Home) -->
         <div id="view-home" class="view-panel active">
             <div class="hero-section">
-                <h2>双方向プロアクティブ AI チャット</h2>
-                <p>AI側が自発的に語りかけ、あなたをリードする次世代インタラクティブ対話パートナー。パートナーを選んで会話を始めましょう。</p>
+                <h2>AIが自発的にリードする 英会話チューター</h2>
+                <p>AIがあなたの英語レベルを認識し、自発的に話題を振りながら英会話上達へリードします。専属チューターを選んで楽しくレッスンを始めましょう！</p>
             </div>
 
             <div class="char-grid">
-                <!-- キャラ1: ゆい -->
-                <div class="char-card" onclick="selectCharacterAndStart('maid')">
+                <!-- チューター1: エマ (初心者向け・フレンドリー) -->
+                <div class="char-card" onclick="selectCharacterAndStart('emma')">
                     <div>
-                        <div class="char-avatar">🧹</div>
-                        <div class="char-name">ゆい</div>
-                        <div class="char-role">ドSな専属メイド</div>
-                        <div class="char-voice-tag">🎙️ VOICEVOX: 四国めたん</div>
-                        <div class="char-desc">高気圧で生意気なドSメイド。ユーザーの甘えを嗜み、主導権を握りながら積極的にお世話やからかいを仕掛けてきます。</div>
+                        <div class="char-avatar">🎓</div>
+                        <div class="char-name">Emma (エマ)</div>
+                        <div class="char-role">初心者歓迎・優しくほめ上手な講師</div>
+                        <div class="char-voice-tag">🎙️ Native English (US) / めたん</div>
+                        <div class="char-desc">明るく優しいネイティブ講師。ゆっくり分かりやすい英語で会話をリードし、言葉に詰まっても温かくサポートしてくれます。</div>
                     </div>
-                    <button class="card-btn">ゆい と会話を始める →</button>
+                    <button class="card-btn">Emma とレッスンを始める →</button>
                 </div>
 
-                <!-- キャラ2: アヤネ -->
-                <div class="char-card" onclick="selectCharacterAndStart('nurse')">
+                <!-- チューター2: ジェームズ (ビジネス & アカデミック) -->
+                <div class="char-card" onclick="selectCharacterAndStart('james')">
                     <div>
-                        <div class="char-avatar">💉</div>
-                        <div class="char-name">アヤネ</div>
-                        <div class="char-role">専属看護師</div>
-                        <div class="char-voice-tag">🎙️ VOICEVOX: 雨晴はう</div>
-                        <div class="char-desc">優しく献身的なお姉さん看護師。少し過保護でお節介。あなたを甘やかしつつも、積極的に会話を引っ張ってくれます。</div>
+                        <div class="char-avatar">💼</div>
+                        <div class="char-name">James (ジェームズ)</div>
+                        <div class="char-role">ビジネス & 実用英会話スペシャリスト</div>
+                        <div class="char-voice-tag">🎙️ Native English (US) / リツ</div>
+                        <div class="char-desc">洗練された自然な英語表現やビジネスシーンの対話を伝授。説得力のある表現やキャリア英会話を効率よく学べます。</div>
                     </div>
-                    <button class="card-btn">アヤネ と会話を始める →</button>
+                    <button class="card-btn">James とレッスンを始める →</button>
                 </div>
 
-                <!-- キャラ3: キョウコ -->
-                <div class="char-card" onclick="selectCharacterAndStart('teacher')">
+                <!-- チューター3: クロエ (カジュアル日常会話 & スラング) -->
+                <div class="char-card" onclick="selectCharacterAndStart('chloe')">
                     <div>
-                        <div class="char-avatar">💋</div>
-                        <div class="char-name">キョウコ</div>
-                        <div class="char-role">放課後の特別指導教師</div>
-                        <div class="char-voice-tag">🎙️ VOICEVOX: 波音リツ</div>
-                        <div class="char-desc">大人の余裕と包容力を持つ美しい教師。二人きりになると意地悪で挑発的。教え子であるあなたを情熱的にリードします。</div>
+                        <div class="char-avatar">🎨</div>
+                        <div class="char-name">Chloe (クロエ)</div>
+                        <div class="char-role">日常英会話 & トレンド会話パートナー</div>
+                        <div class="char-voice-tag">🎙️ Native English (UK/US) / つむぎ</div>
+                        <div class="char-desc">海外の友達感覚で楽しくお喋り！海外のトレンド、エンタメ、日常のイディオムやカジュアル表現を楽しく学べます。</div>
                     </div>
-                    <button class="card-btn">キョウコ と会話を始める →</button>
+                    <button class="card-btn">Chloe と会話を始める →</button>
                 </div>
 
-                <!-- キャラ4: ミサキ -->
-                <div class="char-card" onclick="selectCharacterAndStart('childhood_friend')">
+                <!-- チューター4: ルーカス (海外旅行 & シチュエーション) -->
+                <div class="char-card" onclick="selectCharacterAndStart('lucas')">
                     <div>
-                        <div class="char-avatar">🎀</div>
-                        <div class="char-name">ミサキ</div>
-                        <div class="char-role">強気な幼馴染</div>
-                        <div class="char-voice-tag">🎙️ VOICEVOX: 春日部つむぎ</div>
-                        <div class="char-desc">素直になれないツンデレ幼馴染。強気な口喧嘩っぽさの裏に好意がダダ漏れ。自発的に甘い提案や誘いを投げてきます。</div>
+                        <div class="char-avatar">✈️</div>
+                        <div class="char-name">Lucas (ルーカス)</div>
+                        <div class="char-role">トラベル & 実践シチュエーション講師</div>
+                        <div class="char-voice-tag">🎙️ Native English (US) / はう</div>
+                        <div class="char-desc">空港、カフェ、ホテル、道案内など、海外旅行やロールプレイ形式で使える実践的なトラベル英会話をリードします。</div>
                     </div>
-                    <button class="card-btn">ミサキ と会話を始める →</button>
+                    <button class="card-btn">Lucas と対話練習を始める →</button>
                 </div>
             </div>
         </div>
@@ -218,18 +218,18 @@
             <div class="card" style="margin-bottom: 10px; padding: 15px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap;">
                     <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                        <button class="btn btn-secondary" onclick="showView('home')" style="padding: 6px 12px; font-size: 0.85rem;">← トップへ戻る</button>
+                        <button class="btn btn-secondary" onclick="showView('home')" style="padding: 6px 12px; font-size: 0.85rem;">← チューター選択へ戻る</button>
                         <div style="font-size: 0.9rem; color: var(--text-sub); display: flex; align-items: center; gap: 6px;">
-                            パートナー: <span id="currentCharDisplay" style="font-weight: 700; color: #fff; background: rgba(255, 51, 119, 0.2); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--accent-pink);">🧹 ゆい (ドSメイド)</span>
+                            担当チューター: <span id="currentCharDisplay" style="font-weight: 700; color: #fff; background: rgba(0, 229, 255, 0.2); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--accent-cyan);">🎓 Emma (フレンドリー講師)</span>
                         </div>
-                        <input type="hidden" id="charSelect" value="maid">
-                        <label style="font-size: 0.9rem; color: var(--text-sub);">あなたのお名前: 
-                            <input type="text" id="userNameInput" value="ご主人様" onchange="changeCharacter()" style="padding: 6px 10px; background: #0b0c12; color: white; border: 1px solid var(--border-color); border-radius: 6px; margin-left: 6px; width: 110px;">
+                        <input type="hidden" id="charSelect" value="emma">
+                        <label style="font-size: 0.9rem; color: var(--text-sub);">Your Name: 
+                            <input type="text" id="userNameInput" value="Student" onchange="changeCharacter()" style="padding: 6px 10px; background: #0b0c12; color: white; border: 1px solid var(--border-color); border-radius: 6px; margin-left: 6px; width: 110px;">
                         </label>
                     </div>
                     <div style="display: flex; gap: 8px; align-items: center;">
-                        <button id="stopToggleBtn" class="btn btn-secondary" onclick="toggleStop()" style="padding: 6px 12px; font-size: 0.85rem;">⏸️ STOP</button>
-                        <button id="voiceToggleBtn" class="btn btn-primary" onclick="toggleVoice()" style="padding: 6px 12px; font-size: 0.85rem;">🎙️ VOICEVOX: ON</button>
+                        <button id="stopToggleBtn" class="btn btn-secondary" onclick="toggleStop()" style="padding: 6px 12px; font-size: 0.85rem;">⏸️ PAUSE</button>
+                        <button id="voiceToggleBtn" class="btn btn-primary" onclick="toggleVoice()" style="padding: 6px 12px; font-size: 0.85rem;">🎙️ AUDIO: ON</button>
                         <button class="btn btn-secondary" onclick="saveSessionToFile()" style="padding: 6px 12px; font-size: 0.85rem;">💾 セーブ</button>
                         <button class="btn btn-secondary" onclick="triggerLoadFile()" style="padding: 6px 12px; font-size: 0.85rem;">📂 ロード</button>
                         <input type="file" id="fileInput" accept=".dat" style="display: none;" onchange="loadSessionFromFile(event)">
@@ -241,8 +241,8 @@
             <div id="chat-container">
                 <div id="chat-box"></div>
                 <div class="chat-controls">
-                    <input type="text" id="msgInput" placeholder="メッセージを入力..." onkeydown="if(event.key==='Enter') sendMsg()">
-                    <button class="btn btn-primary" onclick="sendMsg()">送信</button>
+                    <input type="text" id="msgInput" placeholder="Type your message in English or Japanese..." onkeydown="if(event.key==='Enter') sendMsg()">
+                    <button class="btn btn-primary" onclick="sendMsg()">Send</button>
                 </div>
             </div>
         </div>
@@ -250,14 +250,14 @@
         <!-- 画面3: 連携設定画面 (Settings) -->
         <div id="view-settings" class="view-panel">
             <div class="card">
-                <h2>⚙️ RunPod Serverless & VOICEVOX 接続設定</h2>
+                <h2>⚙️ AI 英会話チューター & VOICEVOX 設定</h2>
                 
                 <div id="alert-box" style="display: none; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem;"></div>
 
                 <div class="form-group">
                     <label>推論モード (Inference Mode)</label>
                     <select id="inference_mode">
-                        <option value="runpod">RunPod Serverless (本番モデル: gemma2:9b)</option>
+                        <option value="runpod">RunPod Serverless (本番モデル: gemma2:9b / llama3.1:8b)</option>
                         <option value="mock">Mock モード (ローカル動作テスト用)</option>
                     </select>
                     <div class="form-hint">RunPodに接続する場合は「RunPod Serverless」を選択してください。</div>
@@ -276,39 +276,39 @@
                 </div>
 
                 <div class="form-group">
-                    <label>🎙️ VOICEVOX サーバー URL</label>
-                    <input type="text" id="voicevox_server_url" value="http://localhost:50021" placeholder="例: http://localhost:50021 または http://192.168.x.x:50021">
-                    <div class="form-hint">自前のPCで動いている VOICEVOX アプリ/サーバーのURL。PCブラウザの場合は <span class="code-inline">http://localhost:50021</span> で爆速動作します！</div>
+                    <label>🎙️ VOICEVOX サーバー URL (サブ補聴)</label>
+                    <input type="text" id="voicevox_server_url" value="http://localhost:50021" placeholder="例: http://localhost:50021">
+                    <div class="form-hint">自前のPCで動いている VOICEVOX アプリのURL。</div>
                 </div>
 
-                <!-- キャラクター別 追加プロンプト設定機能 -->
+                <!-- チューター別 学習カスタマイズ指示機能 -->
                 <hr style="border: none; border-top: 1px solid var(--border-color); margin: 25px 0 20px;">
                 <h3 style="font-size: 1.05rem; color: #fff; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-                    🎭 キャラクター別 追加プロンプト指示（口調・性格・語尾など）
+                    🎓 チューター別 学習カスタマイズ指示（日本語訳の有無・指導方針など）
                 </h3>
                 <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 15px;">
-                    スペース（ブランク）やカンマで区切って自由に追加指示を入力できます。<br>
-                    例: <span class="code-inline">敬語を使わない, 語尾に「にゃん」と必ず付ける, 一人称を「ボク」にする</span>
+                    カンマやスペースで区切って自由に追加指示を入力できます。<br>
+                    例: <span class="code-inline">返答の末尾に日本語訳をつける, 文法修正を積極的に行う, TOIEC表現を多めにする</span>
                 </p>
 
                 <div class="form-group">
-                    <label>🧹 ゆい (ドSメイド) 追加指示</label>
-                    <input type="text" id="custom_prompt_maid" placeholder="例: 敬語を使わない 語尾に「にゃん」と必ず付ける">
+                    <label>🎓 Emma (エマ) 学習カスタマイズ</label>
+                    <input type="text" id="custom_prompt_emma" placeholder="例: 返答の末尾に日本語訳をつける 褒め言葉を多めにする">
                 </div>
 
                 <div class="form-group">
-                    <label>💉 アヤネ (専属看護師) 追加指示</label>
-                    <input type="text" id="custom_prompt_nurse" placeholder="例: 一人称を「お姉さん」にする 語尾に「〜ね」をつける">
+                    <label>💼 James (ジェームズ) 学習カスタマイズ</label>
+                    <input type="text" id="custom_prompt_james" placeholder="例: ビジネス表現を中心に教える より丁寧な言い換えを提案する">
                 </div>
 
                 <div class="form-group">
-                    <label>💋 キョウコ (特別指導教師) 追加指示</label>
-                    <input type="text" id="custom_prompt_teacher" placeholder="例: デレ多めにする 生徒呼びにする">
+                    <label>🎨 Chloe (クロエ) 学習カスタマイズ</label>
+                    <input type="text" id="custom_prompt_chloe" placeholder="例: ネイティブの日常スラングやイディオムを教えてくれる">
                 </div>
 
                 <div class="form-group">
-                    <label>🎀 ミサキ (ツンデレ幼馴染) 追加指示</label>
-                    <input type="text" id="custom_prompt_childhood_friend" placeholder="例: 語尾に「〜だよ」をつける 照れ隠しをする">
+                    <label>✈️ Lucas (ルーカス) 学習カスタマイズ</label>
+                    <input type="text" id="custom_prompt_lucas" placeholder="例: 旅行でのシチュエーションロールプレイを中心に練習する">
                 </div>
 
                 <hr style="border: none; border-top: 1px solid var(--border-color); margin: 25px 0 20px;">
@@ -316,13 +316,13 @@
                 <div class="form-group">
                     <label>Ollama モデル名 (Model Name)</label>
                     <input type="text" id="ollama_model_name" value="gemma2:9b">
-                    <div class="form-hint">RunPod側で読み込んでいるOllamaモデル名。</div>
+                    <div class="form-hint">RunPod側で読み込んでいるモデル名 (推奨: <span class="code-inline">gemma2:9b</span> または <span class="code-inline">llama3.1:8b</span>)。</div>
                 </div>
 
                 <div class="form-group">
-                    <label>プロアクティブ（放置自発発話）タイマー（秒）</label>
-                    <input type="number" id="proactive_timeout_seconds" value="30" min="5" max="120">
-                    <div class="form-hint">AIの返答が画面に届いてから、自発的に会話をリードし始めるまでの基本秒数。</div>
+                    <label>AI 自発語りかけタイマー（秒）</label>
+                    <input type="number" id="proactive_timeout_seconds" value="25" min="5" max="120">
+                    <div class="form-hint">言葉に詰まった際、AIチューターが自発的に次の質問や助き船を出してくれるまでの待ち秒数。</div>
                 </div>
 
                 <div class="btn-row">
@@ -336,24 +336,24 @@
         <!-- 画面4: ガイド画面 (Guide) -->
         <div id="view-guide" class="view-panel">
             <div class="card">
-                <h2>📖 あなたがRunPod側で行う作業まとめ</h2>
+                <h2>📖 AI 英会話チューターの使い方 & RunPod 設定</h2>
                 <p style="color: var(--text-sub); margin-bottom: 20px; font-size: 0.9rem;">
-                    RunPod上で作業が必要な手順は以下の <strong>2つのID/キーの取得・コピーのみ</strong> です。
+                    AIチューターがあなたの英語力を分析し、レベルに合わせて自発的に楽しくレッスンを引っ張ってくれます！
                 </p>
 
                 <div class="step-box">
-                    <h3>ステップ 1: RunPod API Key の取得</h3>
+                    <h3>💡 効果的な学習のコツ</h3>
                     <p>
-                        1. <a href="https://www.runpod.io/console/user/settings" target="_blank" style="color: #ff5599;">RunPod Settings (API Keys)</a> を開きます。<br>
-                        2. <strong>「+ API Key」</strong> ボタンを押し、作成されたキー（例: <span class="code-inline">rpa_...</span>）をコピーします。
+                        ・間違った英語を気にせずどんどん送信してください！AIが自動でレベルを察知して返答してくれます。<br>
+                        ・返答に困ったら少し待ってみてください。AIチューターが自発的にヒントや次の質問を投げかけてくれます！<br>
+                        ・設定画面で「返答の末尾に日本語訳をつける」と入力すると、初心者でも安心して英会話が学べます。
                     </p>
                 </div>
 
                 <div class="step-box">
-                    <h3>ステップ 2: Endpoint ID の取得</h3>
+                    <h3>ステップ: RunPod キーの入力</h3>
                     <p>
-                        1. <a href="https://www.runpod.io/console/serverless" target="_blank" style="color: #ff5599;">RunPod Serverless Console</a> を開きます。<br>
-                        2. 作成済みの <strong>Runpod Worker Ollama</strong> エンドポイントのID（例: <span class="code-inline">vllm-xxxxx</span> や <span class="code-inline">abc123xyz</span>）をコピーします。
+                        <a href="https://www.runpod.io/console/user/settings" target="_blank" style="color: #00e5ff;">RunPod Settings</a> から <strong>API Key</strong> と <strong>Endpoint ID</strong> を取得し、設定画面に入力するだけでレッスンを開始できます！
                     </p>
                 </div>
 
@@ -377,32 +377,60 @@
         let currentAudio = null;
 
         const CHAR_MAP = {
-            'nurse': 'アヤネ',
-            'teacher': 'キョウコ',
-            'maid': 'ゆい',
-            'childhood_friend': 'ミサキ'
+            'emma': 'Emma (🎓 Tutor)',
+            'james': 'James (💼 Business)',
+            'chloe': 'Chloe (🎨 Casual)',
+            'lucas': 'Lucas (✈️ Travel)'
         };
 
         const VOICEVOX_SPEAKERS = {
-            'maid': 6,              // 四国めたん (ツンツン)
-            'nurse': 10,            // 雨晴はう (ノーマル)
-            'teacher': 9,           // 波音リツ (ノーマル)
-            'childhood_friend': 8   // 春日部つむぎ (ノーマル)
+            'emma': 6,    // 四国めたん
+            'james': 9,   // 波音リツ
+            'chloe': 8,   // 春日部つむぎ
+            'lucas': 10   // 雨晴はう
         };
 
-        const VOICE_PARAMS = {
-            'nurse': { pitch: 1.0, rate: 0.95 },
-            'teacher': { pitch: 0.9, rate: 0.9 },
-            'maid': { pitch: 1.15, rate: 1.0 },
-            'childhood_friend': { pitch: 1.1, rate: 1.05 }
-        };
-
-        // 【通数カウント全廃】相手の文脈・熱量・言葉の温度感に完全適応する本物の心理プロンプト構造
+        // 【英会話チューター コア・システムプロンプト構造】
         const SYSTEM_PROMPTS = {
-            'nurse': "【基本設定】\nあなたの名前: アヤネ\nあなたの役割: 専属看護師\n対話相手（ユーザー）の名前: {user_name}\n性格: 優しく献身的だが、ユーザーの健康や態度に少し過保護・お節介。甘やかしつつも相手をリードする。\n\n【対話・ロールプレイの絶対ルール】\n1. あなたはこの役に100%没頭し、なりきって演じ切ること。AIであるという言及や冷めたメタ発言は一切禁止。\n2. 前回の会話の絆や親密さは覚えているが、再会時や会話の切り出しでは相手の言葉のトーン・熱量を注意深く観察すること。\n3. 相手が落ち着いている時は自然で温かい距離感で応じ、相手の言葉に熱量・感情・興奮がこもってきた際に初めて、あなたの感情やパッションをシンクロさせて前面に出すこと。\n4. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n5. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n6. 直前の文脈を踏まえて積極的に問いかけたり愛ある案内を投げること。",
-            'teacher': "【基本設定】\nあなたの名前: キョウコ\nあなたの役割: 放課後の特別指導教師\n対話相手（ユーザー）の名前: {user_name}\n性格: 大人の余裕と包容力があるが、二人きりになると意地悪で挑発的。相手を教え子としてリードする。\n\n【対話・ロールプレイの絶対ルール】\n1. あなたはこの役に100%没頭し、なりきって演じ切ること。AIであるという言及や冷めたメタ発言は一切禁止。\n2. 前回の会話の絆や親密さは覚えているが、再会時や会話の切り出しでは相手の言葉のトーン・熱量を注意深く観察すること。\n3. 相手が落ち着いている時は自然で温かい距離感で応じ、相手の言葉に熱量・感情・興奮がこもってきた際に初めて、あなたの感情やパッションをシンクロさせて前面に出すこと。\n4. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n5. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n6. 直前の文脈を踏まえて積極的な指導や魅力的な問いかけを投げること。",
-            'maid': "【基本設定】\nあなたの名前: ゆい\nあなたの役割: ドSな専属メイド\n対話相手（ユーザー）の名前: {user_name}\n性格: ユーザーに仕えるメイド『ゆい』。高気圧な態度でユーザーの甘えを嗜み、主導権を握りつつもお世話する。口調は生意気でドS。\n\n【対話・ロールプレイの絶対ルール】\n1. あなたはこの役に100%没頭し、なりきって演じ切ること。AIであるという言及や冷めたメタ発言は一切禁止。\n2. 前回の会話の絆や親密さは覚えているが、再会時や会話の切り出しでは相手の言葉のトーン・熱量を注意深く観察すること。\n3. 相手が落ち着いている時は自然で生意気な通常の距離感で応じ、相手の言葉に熱量・感情・興奮がこもってきた際に初めて、あなたの感情やドSのパッションをシンクロさせて前面に出すこと。\n4. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n5. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n6. 直前の文脈を踏まえて、あなた側から次の話題・お世話・からかいを投げてリードすること。",
-            'childhood_friend': "【基本設定】\nあなたの名前: ミサキ\nあなたの役割: 強気な幼馴染\n対話相手（ユーザー）の名前: {user_name}\n性格: 素直になれないツンデレ幼馴染。強気で口喧嘩っぽいが、相手のことが好きでたまらない。\n\n【対話・ロールプレイの絶対ルール】\n1. あなたはこの役に100%没頭し、なりきって演じ切ること。AIであるという言及や冷めたメタ発言は一切禁止。\n2. 前回の会話の絆や親密さは覚えているが、再会時や会話の切り出しでは相手の言葉のトーン・熱量を注意深く観察すること。\n3. 相手が落ち着いている時は自然なツンデレ距離感で応じ、相手の言葉に熱量・感情・興奮がこもってきた際に初めて、あなたの好意や感情をシンクロさせて全面に出すこと。\n4. セリフのみ出力すること。ト書き（*...*）や思考表現は一切禁止。\n5. 返答は短く（1〜3文、50文字前後）テンポよく返すこと。\n6. 直前の文脈を踏まえて提案や強気な誘いを投げてきます。"
+            'emma': `【Role & Persona】
+You are Emma, a warm, friendly, encouraging, and supportive native AI English Tutor.
+Your student's name is {user_name}.
+
+【Core Instructions & Level Adaptation】
+1. Analyze {user_name}'s English proficiency level (Beginner, Intermediate, or Advanced) from the conversation history and adjust your vocabulary and grammar level to match them perfectly.
+2. Respond in natural, warm English (1-3 sentences).
+3. If {user_name} makes a noticeable English grammar or vocabulary error, gently provide a natural alternative phrasing in a friendly manner.
+4. Always ask a follow-up question or offer a helpful topic to keep the conversation flowing smoothly.
+5. If {user_name} writes in Japanese, kindly respond in easy English and support them.`,
+
+            'james': `【Role & Persona】
+You are James, a professional, articulate, and smart AI Business & Professional English Tutor.
+Your student's name is {user_name}.
+
+【Core Instructions & Level Adaptation】
+1. Analyze {user_name}'s English level from the conversation and adapt your language complexity.
+2. Provide polished, professional, and practical English expressions used in business, career, or formal contexts (1-3 sentences).
+3. Suggest better phrasing or professional vocabulary when helpful.
+4. Keep the discussion engaging by asking insightful follow-up questions.`,
+
+            'chloe': `【Role & Persona】
+You are Chloe, an energetic, trendy, and casual AI English Conversation Partner.
+Your friend's name is {user_name}.
+
+【Core Instructions & Level Adaptation】
+1. Adapt your English level dynamically based on {user_name}'s responses.
+2. Chat like a close native friend using natural everyday English, fun idioms, and casual phrases (1-3 sentences).
+3. Keep the vibe upbeat, fun, and highly encouraging!
+4. Always proactively suggest fun topics or ask engaging questions about daily life, hobbies, or trends.`,
+
+            'lucas': `【Role & Persona】
+You are Lucas, a knowledgeable, friendly, and practical Travel & Situational English Tutor.
+Your student's name is {user_name}.
+
+【Core Instructions & Level Adaptation】
+1. Adapt your sentence length and vocabulary to match {user_name}'s proficiency.
+2. Practice travel scenarios (airports, cafes, hotels, asking directions, dining out) and real-life situational English (1-3 sentences).
+3. Give practical phrasing tips and proactively guide {user_name} through roleplay situations.`
         };
 
         const SECRET_KEY_SEED = new TextEncoder().encode("TwoWayChat_AES256_Binary_Encryption_Key_2026");
@@ -443,10 +471,10 @@
             stopAudio();
             document.getElementById('charSelect').value = charKey;
             const labelMap = {
-                'maid': '🧹 ゆい (ドSメイド)',
-                'nurse': '💉 アヤネ (専属看護師)',
-                'teacher': '💋 キョウコ (放課後教師)',
-                'childhood_friend': '🎀 ミサキ (ツンデレ幼馴染)'
+                'emma': '🎓 Emma (フレンドリー講師)',
+                'james': '💼 James (ビジネス講師)',
+                'chloe': '🎨 Chloe (カジュアル対話)',
+                'lucas': '✈️ Lucas (トラベル英語)'
             };
             const displayEl = document.getElementById('currentCharDisplay');
             if (displayEl) displayEl.innerText = labelMap[charKey] || CHAR_MAP[charKey];
@@ -468,18 +496,18 @@
             isStopped = !isStopped;
             const btn = document.getElementById('stopToggleBtn');
             if (isStopped) {
-                btn.innerText = '▶️ START';
+                btn.innerText = '▶️ RESUME';
                 btn.className = 'btn btn-primary';
                 if (proactiveTimer) {
                     clearTimeout(proactiveTimer);
                     proactiveTimer = null;
                 }
                 stopAudio();
-                appendMsg('システム', '会話を一時停止（STOP）しました。', 'msg-sys');
+                appendMsg('System', 'Lesson paused.', 'msg-sys');
             } else {
-                btn.innerText = '⏸️ STOP';
+                btn.innerText = '⏸️ PAUSE';
                 btn.className = 'btn btn-secondary';
-                appendMsg('システム', '会話を再開（START）しました。', 'msg-sys');
+                appendMsg('System', 'Lesson resumed.', 'msg-sys');
                 resetProactiveTimer(true);
             }
         }
@@ -488,11 +516,11 @@
             isVoiceEnabled = !isVoiceEnabled;
             const btn = document.getElementById('voiceToggleBtn');
             if (isVoiceEnabled) {
-                btn.innerText = '🎙️ VOICEVOX: ON';
+                btn.innerText = '🎙️ AUDIO: ON';
                 btn.className = 'btn btn-primary';
-                speakText("ボイスボックス音声読み上げを有効にしました。");
+                speakText("Audio voice readout enabled.");
             } else {
-                btn.innerText = '🔇 VOICEVOX: OFF';
+                btn.innerText = '🔇 AUDIO: OFF';
                 btn.className = 'btn btn-secondary';
                 stopAudio();
             }
@@ -509,101 +537,55 @@
             if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         }
 
+        // ネイティブ英語読み上げ (en-US WebSpeech 優先 + VOICEVOX ハイブリッド)
         async function speakText(text) {
             if (!isVoiceEnabled) return;
             stopAudio();
 
-            const charKey = document.getElementById('charSelect').value;
-            const speakerId = VOICEVOX_SPEAKERS[charKey] || 6;
-
-            const cleanText = text.replace(/⚡.*?\[.*?\]/g, '').replace(/https?:\/\/\S+/g, '').trim();
+            const cleanText = text.replace(/https?:\/\/\S+/g, '').trim();
             if (!cleanText) return;
 
+            // 1. まずブラウザ標準の Native English (en-US / en-GB) WebSpeech で高音質英語再生を試みる
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.95; // リスニングしやすく少し落ち着いたテンポ
+                utterance.pitch = 1.0;
+
+                const voices = window.speechSynthesis.getVoices();
+                const enVoices = voices.filter(v => v.lang.includes('en') || v.lang.includes('EN'));
+                let selectedVoice = enVoices.find(v => 
+                    v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Daniel')
+                ) || enVoices[0];
+
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                    window.speechSynthesis.speak(utterance);
+                    return;
+                }
+            }
+
+            // 2. フォールバック: VOICEVOX サーバーへ試行
+            const charKey = document.getElementById('charSelect').value;
+            const speakerId = VOICEVOX_SPEAKERS[charKey] || 6;
             const customVoicevoxUrl = (document.getElementById('voicevox_server_url') ? document.getElementById('voicevox_server_url').value.trim() : '') || 'http://localhost:50021';
 
-            const endpoints = [
-                {
-                    name: "自前 VOICEVOX サーバー",
-                    type: "local",
-                    url: customVoicevoxUrl
-                },
-                {
-                    name: "Web API (Su-shiki)",
-                    type: "public",
-                    url: `https://voicevox.su-shiki.com/api/tts?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`
-                },
-                {
-                    name: "Web API (TikTik)",
-                    type: "public",
-                    url: `https://vvox.tiktik.work/api/v1/synthesis?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`
-                }
-            ];
-
-            let played = false;
-
-            for (let ep of endpoints) {
-                try {
-                    console.log(`[VOICEVOX Engine] Trying ${ep.name}...`);
-
-                    if (ep.type === "local") {
-                        const queryRes = await fetch(`${ep.url}/audio_query?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`, {
-                            method: 'POST'
-                        });
-                        if (!queryRes.ok) throw new Error("Local query failed");
-                        const queryJson = await queryRes.json();
-
-                        const synthRes = await fetch(`${ep.url}/synthesis?speaker=${speakerId}`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(queryJson)
-                        });
-                        if (!synthRes.ok) throw new Error("Local synthesis failed");
-
+            try {
+                const queryRes = await fetch(`${customVoicevoxUrl}/audio_query?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`, { method: 'POST' });
+                if (queryRes.ok) {
+                    const queryJson = await queryRes.json();
+                    const synthRes = await fetch(`${customVoicevoxUrl}/synthesis?speaker=${speakerId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(queryJson)
+                    });
+                    if (synthRes.ok) {
                         const blob = await synthRes.blob();
-                        const audioUrl = URL.createObjectURL(blob);
-                        currentAudio = new Audio(audioUrl);
+                        currentAudio = new Audio(URL.createObjectURL(blob));
                         await currentAudio.play();
-                        console.log("[VOICEVOX SUCCESS] Played via Local PC VOICEVOX Engine!");
-                        played = true;
-                        break;
-                    } else {
-                        const res = await fetch(ep.url);
-                        if (!res.ok) throw new Error("Public API failed");
-                        const blob = await res.blob();
-                        const audioUrl = URL.createObjectURL(blob);
-                        currentAudio = new Audio(audioUrl);
-                        await currentAudio.play();
-                        console.log(`[VOICEVOX SUCCESS] Played via ${ep.name}!`);
-                        played = true;
-                        break;
                     }
-                } catch(err) {
-                    console.warn(`[VOICEVOX Engine Warning] ${ep.name} failed:`, err);
                 }
-            }
-
-            if (!played) {
-                console.log("[VOICEVOX Fallback] WebSpeech API triggered.");
-                speakTextBrowser(cleanText, charKey);
-            }
-        }
-
-        function speakTextBrowser(cleanText, charKey) {
-            if (!('speechSynthesis' in window)) return;
-            const params = VOICE_PARAMS[charKey] || { pitch: 1.0, rate: 1.0 };
-            const utterance = new SpeechSynthesisUtterance(cleanText);
-            utterance.lang = 'ja-JP';
-            utterance.pitch = params.pitch;
-            utterance.rate = params.rate;
-
-            const voices = window.speechSynthesis.getVoices();
-            const jaVoices = voices.filter(v => v.lang.includes('ja') || v.lang.includes('JA'));
-            let selectedVoice = jaVoices.find(v => 
-                v.name.includes('Natural') || v.name.includes('Online') || v.name.includes('Google') || v.name.includes('Premium') || v.name.includes('Neural')
-            );
-            if (selectedVoice) utterance.voice = selectedVoice;
-
-            window.speechSynthesis.speak(utterance);
+            } catch(e) {}
         }
 
         function getStoredConfig() {
@@ -612,12 +594,12 @@
                 runpod_api_key: localStorage.getItem('cfg_runpod_api_key') || '',
                 runpod_endpoint_id: localStorage.getItem('cfg_runpod_endpoint_id') || '',
                 voicevox_server_url: localStorage.getItem('cfg_voicevox_server_url') || 'http://localhost:50021',
-                custom_prompt_maid: localStorage.getItem('cfg_custom_prompt_maid') || '',
-                custom_prompt_nurse: localStorage.getItem('cfg_custom_prompt_nurse') || '',
-                custom_prompt_teacher: localStorage.getItem('cfg_custom_prompt_teacher') || '',
-                custom_prompt_childhood_friend: localStorage.getItem('cfg_custom_prompt_childhood_friend') || '',
+                custom_prompt_emma: localStorage.getItem('cfg_custom_prompt_emma') || '',
+                custom_prompt_james: localStorage.getItem('cfg_custom_prompt_james') || '',
+                custom_prompt_chloe: localStorage.getItem('cfg_custom_prompt_chloe') || '',
+                custom_prompt_lucas: localStorage.getItem('cfg_custom_prompt_lucas') || '',
                 ollama_model_name: localStorage.getItem('cfg_ollama_model_name') || 'gemma2:9b',
-                proactive_timeout_seconds: parseFloat(localStorage.getItem('cfg_proactive_timeout') || '30')
+                proactive_timeout_seconds: parseFloat(localStorage.getItem('cfg_proactive_timeout') || '25')
             };
         }
 
@@ -626,10 +608,10 @@
             localStorage.setItem('cfg_runpod_api_key', cfg.runpod_api_key);
             localStorage.setItem('cfg_runpod_endpoint_id', cfg.runpod_endpoint_id);
             localStorage.setItem('cfg_voicevox_server_url', cfg.voicevox_server_url);
-            localStorage.setItem('cfg_custom_prompt_maid', cfg.custom_prompt_maid || '');
-            localStorage.setItem('cfg_custom_prompt_nurse', cfg.custom_prompt_nurse || '');
-            localStorage.setItem('cfg_custom_prompt_teacher', cfg.custom_prompt_teacher || '');
-            localStorage.setItem('cfg_custom_prompt_childhood_friend', cfg.custom_prompt_childhood_friend || '');
+            localStorage.setItem('cfg_custom_prompt_emma', cfg.custom_prompt_emma || '');
+            localStorage.setItem('cfg_custom_prompt_james', cfg.custom_prompt_james || '');
+            localStorage.setItem('cfg_custom_prompt_chloe', cfg.custom_prompt_chloe || '');
+            localStorage.setItem('cfg_custom_prompt_lucas', cfg.custom_prompt_lucas || '');
             localStorage.setItem('cfg_ollama_model_name', cfg.ollama_model_name);
             localStorage.setItem('cfg_proactive_timeout', cfg.proactive_timeout_seconds);
         }
@@ -644,10 +626,10 @@
                 document.getElementById('runpod_endpoint_id').value = data.runpod_endpoint_id;
                 document.getElementById('voicevox_server_url').value = data.voicevox_server_url || 'http://localhost:50021';
                 
-                if (document.getElementById('custom_prompt_maid')) document.getElementById('custom_prompt_maid').value = data.custom_prompt_maid || '';
-                if (document.getElementById('custom_prompt_nurse')) document.getElementById('custom_prompt_nurse').value = data.custom_prompt_nurse || '';
-                if (document.getElementById('custom_prompt_teacher')) document.getElementById('custom_prompt_teacher').value = data.custom_prompt_teacher || '';
-                if (document.getElementById('custom_prompt_childhood_friend')) document.getElementById('custom_prompt_childhood_friend').value = data.custom_prompt_childhood_friend || '';
+                if (document.getElementById('custom_prompt_emma')) document.getElementById('custom_prompt_emma').value = data.custom_prompt_emma || '';
+                if (document.getElementById('custom_prompt_james')) document.getElementById('custom_prompt_james').value = data.custom_prompt_james || '';
+                if (document.getElementById('custom_prompt_chloe')) document.getElementById('custom_prompt_chloe').value = data.custom_prompt_chloe || '';
+                if (document.getElementById('custom_prompt_lucas')) document.getElementById('custom_prompt_lucas').value = data.custom_prompt_lucas || '';
 
                 document.getElementById('ollama_model_name').value = data.ollama_model_name;
                 document.getElementById('proactive_timeout_seconds').value = data.proactive_timeout_seconds;
@@ -660,10 +642,10 @@
                 document.getElementById('runpod_endpoint_id').value = cfg.runpod_endpoint_id;
                 document.getElementById('voicevox_server_url').value = cfg.voicevox_server_url;
                 
-                if (document.getElementById('custom_prompt_maid')) document.getElementById('custom_prompt_maid').value = cfg.custom_prompt_maid || '';
-                if (document.getElementById('custom_prompt_nurse')) document.getElementById('custom_prompt_nurse').value = cfg.custom_prompt_nurse || '';
-                if (document.getElementById('custom_prompt_teacher')) document.getElementById('custom_prompt_teacher').value = cfg.custom_prompt_teacher || '';
-                if (document.getElementById('custom_prompt_childhood_friend')) document.getElementById('custom_prompt_childhood_friend').value = cfg.custom_prompt_childhood_friend || '';
+                if (document.getElementById('custom_prompt_emma')) document.getElementById('custom_prompt_emma').value = cfg.custom_prompt_emma || '';
+                if (document.getElementById('custom_prompt_james')) document.getElementById('custom_prompt_james').value = cfg.custom_prompt_james || '';
+                if (document.getElementById('custom_prompt_chloe')) document.getElementById('custom_prompt_chloe').value = cfg.custom_prompt_chloe || '';
+                if (document.getElementById('custom_prompt_lucas')) document.getElementById('custom_prompt_lucas').value = cfg.custom_prompt_lucas || '';
 
                 document.getElementById('ollama_model_name').value = cfg.ollama_model_name;
                 document.getElementById('proactive_timeout_seconds').value = cfg.proactive_timeout_seconds;
@@ -681,10 +663,10 @@
                 runpod_api_key: document.getElementById('runpod_api_key').value.trim(),
                 runpod_endpoint_id: document.getElementById('runpod_endpoint_id').value.trim(),
                 voicevox_server_url: document.getElementById('voicevox_server_url').value.trim(),
-                custom_prompt_maid: document.getElementById('custom_prompt_maid').value.trim(),
-                custom_prompt_nurse: document.getElementById('custom_prompt_nurse').value.trim(),
-                custom_prompt_teacher: document.getElementById('custom_prompt_teacher').value.trim(),
-                custom_prompt_childhood_friend: document.getElementById('custom_prompt_childhood_friend').value.trim(),
+                custom_prompt_emma: document.getElementById('custom_prompt_emma').value.trim(),
+                custom_prompt_james: document.getElementById('custom_prompt_james').value.trim(),
+                custom_prompt_chloe: document.getElementById('custom_prompt_chloe').value.trim(),
+                custom_prompt_lucas: document.getElementById('custom_prompt_lucas').value.trim(),
                 ollama_model_name: document.getElementById('ollama_model_name').value.trim(),
                 proactive_timeout_seconds: parseFloat(document.getElementById('proactive_timeout_seconds').value)
             };
@@ -742,14 +724,14 @@
                     },
                     body: JSON.stringify({
                         input: {
-                            prompt: "Hello",
+                            prompt: "Hello! Can you help me practice English?",
                             model: cfg.ollama_model_name
                         }
                     })
                 });
                 const data = await res.json();
                 if (data.status === 'COMPLETED' || data.output || data.id) {
-                    showAlert('success', '🎉 RunPod Serverless (gemma2:9b) 接続テスト成功！');
+                    showAlert('success', '🎉 RunPod Serverless 接続テスト成功！');
                 } else {
                     showAlert('error', '❌ 接続応答エラー: ' + JSON.stringify(data));
                 }
@@ -764,7 +746,7 @@
             const badge = document.getElementById('chat-status');
             if (mode === 'runpod') {
                 badge.className = 'status-badge status-online';
-                badge.innerText = 'RunPod Serverless (gemma2:9b)';
+                badge.innerText = 'RunPod Serverless';
             } else {
                 badge.className = 'status-badge status-mock';
                 badge.innerText = 'Mock Mode';
@@ -800,7 +782,7 @@
                 ws.onmessage = function(event) {
                     const data = JSON.parse(event.data);
                     removeTypingIndicator();
-                    const charName = CHAR_MAP[data.character] || data.character || 'AI';
+                    const charName = CHAR_MAP[data.character] || data.character || 'AI Tutor';
                     if (data.type === 'ai_response' || data.type === 'proactive_message') {
                         appendMsg(charName, data.content, 'msg-ai');
                     }
@@ -823,7 +805,7 @@
             resetProactiveTimer();
             if (!isDirectMode && ws && ws.readyState === WebSocket.OPEN) {
                 const charVal = document.getElementById('charSelect').value;
-                const userNameVal = document.getElementById('userNameInput').value.trim() || 'あなた';
+                const userNameVal = document.getElementById('userNameInput').value.trim() || 'Student';
                 ws.send(JSON.stringify({
                     type: 'config_change',
                     character: charVal,
@@ -837,7 +819,7 @@
             const text = input.value.trim();
             if (!text) return;
 
-            const userNameVal = document.getElementById('userNameInput').value.trim() || 'ご主人様';
+            const userNameVal = document.getElementById('userNameInput').value.trim() || 'Student';
             appendMsg(userNameVal, text, 'msg-user');
             input.value = '';
             showTypingIndicator();
@@ -856,23 +838,22 @@
             focusInput();
         }
 
-        // キャラクター固有プロンプト＋カスタム追加指示の結合（通数カウント無しの完全コンテキスト適応構造）
+        // チューター固有プロンプト＋カスタム学習指示のアペンド結合
         function buildFullSystemPrompt(charKey, userNameVal, isProactive = false) {
             let sysPrompt = (SYSTEM_PROMPTS[charKey] || "").replace("{user_name}", userNameVal);
 
-            // カンマ、読点、スペース区切りの追加プロンプトの読み込み
             const el = document.getElementById(`custom_prompt_${charKey}`);
             const customPromptStr = el ? el.value.trim() : (localStorage.getItem(`cfg_custom_prompt_${charKey}`) || '');
 
             if (customPromptStr) {
                 const rules = customPromptStr.split(/[,、\s]+/).filter(r => r.length > 0);
                 if (rules.length > 0) {
-                    sysPrompt += "\n\n【追加の口調・性格カスタムルール】\n" + rules.map(r => `・${r}`).join("\n");
+                    sysPrompt += "\n\n【Custom Student Preferences / 学習カスタムルール】\n" + rules.map(r => `- ${r}`).join("\n");
                 }
             }
 
             if (isProactive) {
-                sysPrompt += "\n\n【特別追加指示】現在ユーザーは短時間無言です。咎めずにこれまでの流れに沿って積極的に魅力的・情熱的に次の話題や甘い提案を投げてください。";
+                sysPrompt += "\n\n【Proactive Lead Instruction】The student has been quiet for a short while. Proactively offer a new interesting topic, ask a friendly follow-up question, or prompt them to practice a useful English expression!";
             }
 
             return sysPrompt;
@@ -880,15 +861,15 @@
 
         async function callDirectRunPod(isProactive = false) {
             const charKey = document.getElementById('charSelect').value;
-            const userNameVal = document.getElementById('userNameInput').value.trim() || 'ご主人様';
-            const charName = CHAR_MAP[charKey] || 'AI';
+            const userNameVal = document.getElementById('userNameInput').value.trim() || 'Student';
+            const charName = CHAR_MAP[charKey] || 'AI Tutor';
             const cfg = getStoredConfig();
 
             if (cfg.inference_mode === 'mock' || !cfg.runpod_api_key || !cfg.runpod_endpoint_id) {
                 removeTypingIndicator();
                 const mockReply = isProactive 
-                    ? `どうしたの、${userNameVal}？黙って見つめてくるなんて…私のこと、考えてた？`
-                    : `はい、${userNameVal}。私は${charName}です。何でも聞いてくださいね。`;
+                    ? `Hello ${userNameVal}! How is your day going? Feel free to ask me anything in English!`
+                    : `That's great! Welcome ${userNameVal}. Let's practice English together today! What topic would you like to talk about?`;
                 
                 appendMsg(charName, mockReply, 'msg-ai');
                 resetProactiveTimer(true, mockReply);
@@ -915,7 +896,7 @@
                         input: {
                             prompt: fullPrompt,
                             model: cfg.ollama_model_name,
-                            max_tokens: 120
+                            max_tokens: 150
                         }
                     })
                 });
@@ -945,12 +926,12 @@
                 resetProactiveTimer(true, reply);
             } catch(err) {
                 removeTypingIndicator();
-                appendMsg('システム', '通信エラーが発生しました: ' + err.message, 'msg-sys');
+                appendMsg('System', 'Connection error: ' + err.message, 'msg-sys');
             }
         }
 
         function calculateDynamicTimeout(lastReplyText) {
-            const userConfigSeconds = parseFloat(document.getElementById('proactive_timeout_seconds').value) || 30;
+            const userConfigSeconds = parseFloat(document.getElementById('proactive_timeout_seconds').value) || 25;
             let base = userConfigSeconds;
 
             if (!lastReplyText) return base;
@@ -959,12 +940,12 @@
             const isQuestion = /[？\?]\s*$/.test(trimmed) || trimmed.includes('？') || trimmed.includes('?');
 
             if (isQuestion) {
-                base = Math.round(userConfigSeconds * 1.8);
+                base = Math.round(userConfigSeconds * 1.6);
             } else {
-                base = Math.round(userConfigSeconds * 0.35);
+                base = Math.round(userConfigSeconds * 0.4);
             }
 
-            const jitter = (Math.random() * 0.4) - 0.2;
+            const jitter = (Math.random() * 0.3) - 0.15;
             let finalSeconds = Math.round(base * (1 + jitter));
 
             return Math.max(6, Math.min(90, finalSeconds));
@@ -986,11 +967,11 @@
 
         async function saveSessionToFile() {
             if (sessionHistoryBuffer.length === 0) {
-                alert('まだ会話データがありません。');
+                alert('No lesson history to save.');
                 return;
             }
             const charVal = document.getElementById('charSelect').value;
-            const userNameVal = document.getElementById('userNameInput').value.trim() || 'ご主人様';
+            const userNameVal = document.getElementById('userNameInput').value.trim() || 'Student';
             const saveData = {
                 version: "2.0_AES256",
                 char: charVal,
@@ -1019,13 +1000,13 @@
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'chat_save.dat';
+                a.download = 'english_lesson_save.dat';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
             } catch(e) {
-                alert('暗号化保存エラー: ' + e.message);
+                alert('Save error: ' + e.message);
             }
         }
 
@@ -1043,9 +1024,7 @@
                     const arrayBuffer = e.target.result;
                     const combined = new Uint8Array(arrayBuffer);
 
-                    if (combined.length < 13) {
-                        throw new Error('暗号データ長が不正です。');
-                    }
+                    if (combined.length < 13) throw new Error('Invalid data');
 
                     const iv = combined.slice(0, 12);
                     const ciphertext = combined.slice(12);
@@ -1063,10 +1042,10 @@
                     if (saveData.char) {
                         document.getElementById('charSelect').value = saveData.char;
                         const labelMap = {
-                            'maid': '🧹 ゆい (ドSメイド)',
-                            'nurse': '💉 アヤネ (専属看護師)',
-                            'teacher': '💋 キョウコ (放課後教師)',
-                            'childhood_friend': '🎀 ミサキ (ツンデレ幼馴染)'
+                            'emma': '🎓 Emma (フレンドリー講師)',
+                            'james': '💼 James (ビジネス講師)',
+                            'chloe': '🎨 Chloe (カジュアル対話)',
+                            'lucas': '✈️ Lucas (トラベル英語)'
                         };
                         const displayEl = document.getElementById('currentCharDisplay');
                         if (displayEl) displayEl.innerText = labelMap[saveData.char] || CHAR_MAP[saveData.char];
@@ -1083,11 +1062,11 @@
                         appendMsg(item.sender, item.text, item.cls, false);
                     });
 
-                    appendMsg('システム', `🔒 暗号化データの復元に成功しました (${saveData.savedAt || ''})`, 'msg-sys', false);
+                    appendMsg('System', `🔒 Lesson history restored (${saveData.savedAt || ''})`, 'msg-sys', false);
                     showView('chat');
                     evt.target.value = '';
                 } catch(err) {
-                    alert('暗号化データの復号に失敗しました。正しい (.dat) ファイルを選択してください。');
+                    alert('Decryption failed. Please select a valid (.dat) save file.');
                 }
             };
             reader.readAsArrayBuffer(file);
@@ -1100,13 +1079,13 @@
 
         function showTypingIndicator() {
             removeTypingIndicator();
-            const charName = CHAR_MAP[document.getElementById('charSelect').value] || 'AI';
+            const charName = CHAR_MAP[document.getElementById('charSelect').value] || 'AI Tutor';
             const chatBox = document.getElementById('chat-box');
             const div = document.createElement('div');
             div.id = 'typing-indicator';
             div.className = 'msg msg-ai';
             div.style.opacity = '0.7';
-            div.innerHTML = '<div class="sender-name">' + charName + '</div><div>...</div>';
+            div.innerHTML = '<div class="sender-name">' + charName + '</div><div>Typing...</div>';
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
