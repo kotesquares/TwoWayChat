@@ -730,6 +730,15 @@ Your student's name is {user_name}.
                     })
                 });
                 const data = await res.json();
+                
+                // コールドスタート待機表示 (delayTime / IN_PROGRESS) をガード
+                let rawObj = data.output || data;
+                if (data.status === 'IN_PROGRESS' || (rawObj && (rawObj.delayTime || rawObj.status === 'IN_PROGRESS'))) {
+                    showAlert('info', '⏳ RunPod サーバーレスを起動中です (Warming Up)... もう一度接続テストを押してください。');
+                    if (btn) { btn.disabled = false; btn.innerText = originalText; }
+                    return;
+                }
+
                 if (data.status === 'COMPLETED' || data.output || data.id) {
                     showAlert('success', '🎉 RunPod Serverless 接続テスト成功！');
                 } else {
@@ -784,6 +793,13 @@ Your student's name is {user_name}.
                     removeTypingIndicator();
                     const charName = CHAR_MAP[data.character] || data.character || 'AI Tutor';
                     if (data.type === 'ai_response' || data.type === 'proactive_message') {
+                        // コールドスタート待機メッセージの強力フィルタリング
+                        const strVal = String(data.content || '');
+                        if (strVal.includes('delayTime') || strVal.includes('IN_PROGRESS')) {
+                            console.log('[RunPod Engine] Filtered out warming-up JSON message from WS.');
+                            showTypingIndicator();
+                            return;
+                        }
                         appendMsg(charName, data.content, 'msg-ai');
                     }
                     focusInput();
@@ -838,7 +854,6 @@ Your student's name is {user_name}.
             focusInput();
         }
 
-        // チューター固有プロンプト＋カスタム学習指示のアペンド結合
         function buildFullSystemPrompt(charKey, userNameVal, isProactive = false) {
             let sysPrompt = (SYSTEM_PROMPTS[charKey] || "").replace("{user_name}", userNameVal);
 
@@ -901,14 +916,20 @@ Your student's name is {user_name}.
                     })
                 });
                 const data = await res.json();
-                removeTypingIndicator();
 
-                let reply = "";
+                // 【バグ修正】コールドスタート時の delayTime / IN_PROGRESS レスポンスの強力ガード
                 let rawObj = data.output || data;
                 if (Array.isArray(rawObj) && rawObj.length > 0) {
                     rawObj = rawObj[0];
                 }
 
+                if (data.status === 'IN_PROGRESS' || (rawObj && (rawObj.delayTime || rawObj.status === 'IN_PROGRESS'))) {
+                    console.log('[RunPod Engine] Server warming up (IN_PROGRESS)... Waiting for complete response.');
+                    showTypingIndicator();
+                    return;
+                }
+
+                let reply = "";
                 if (rawObj.choices && rawObj.choices.length > 0) {
                     reply = rawObj.choices[0].text || (rawObj.choices[0].message ? rawObj.choices[0].message.content : "");
                 } else if (typeof rawObj === 'string') {
@@ -919,6 +940,14 @@ Your student's name is {user_name}.
                     reply = JSON.stringify(rawObj);
                 }
 
+                // 文字列チェックでも delayTime / IN_PROGRESS が入っている場合は表示・読み上げを完全遮断
+                if (reply.includes('delayTime') || reply.includes('IN_PROGRESS') || reply.includes('workerId')) {
+                    console.log('[RunPod Engine] Filtered out warming-up JSON message string.');
+                    showTypingIndicator();
+                    return;
+                }
+
+                removeTypingIndicator();
                 reply = reply.replace(/\*.*?\*/g, '').replace(/\(.*?\)/g, '').trim();
                 directConversationHistory.push({ role: 'assistant', content: reply });
 
