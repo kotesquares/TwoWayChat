@@ -96,7 +96,7 @@
         }
 
         .card-btn {
-            width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); color: white; border: none; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: opacity 0.2s;
+            width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); color: white; text-align: center; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: opacity 0.2s; user-select: none;
         }
         .card-btn:hover { opacity: 0.9; }
 
@@ -172,7 +172,7 @@
                         <div class="char-voice-tag">🎙️ VOICEVOX: 四国めたん / Native</div>
                         <div class="char-desc">明るく優しい英会話講師。日本語で丁寧にアドバイスしながら簡単な英語フレーズを優しくレクチャーしてくれます。</div>
                     </div>
-                    <button class="card-btn">Emma とレッスンを始める →</button>
+                    <div class="card-btn">Emma とレッスンを始める →</div>
                 </div>
 
                 <!-- チューター2: ジェームズ (ビジネス & アカデミック) -->
@@ -184,7 +184,7 @@
                         <div class="char-voice-tag">🎙️ VOICEVOX: 波音リツ / Native</div>
                         <div class="char-desc">洗練されたビジネス表現や丁寧な英語を伝授。日本語でワンポイント解説を挟みつつキャリア英語を指導します。</div>
                     </div>
-                    <button class="card-btn">James とレッスンを始める →</button>
+                    <div class="card-btn">James とレッスンを始める →</div>
                 </div>
 
                 <!-- チューター3: クロエ (カジュアル日常会話 & スラング) -->
@@ -196,7 +196,7 @@
                         <div class="char-voice-tag">🎙️ VOICEVOX: 春日部つむぎ / Native</div>
                         <div class="char-desc">海外の友達感覚で楽しくお喋り！日本語をベースに日常の表現やイディオム、使える表現を楽しく教えてくれます。</div>
                     </div>
-                    <button class="card-btn">Chloe と会話を始める →</button>
+                    <div class="card-btn">Chloe と会話を始める →</div>
                 </div>
 
                 <!-- チューター4: ルーカス (海外旅行 & シチュエーション) -->
@@ -208,7 +208,7 @@
                         <div class="char-voice-tag">🎙️ VOICEVOX: 雨晴はう / Native</div>
                         <div class="char-desc">空港、カフェ、ホテル、道案内など、海外旅行やロールプレイ形式で使える実践フレーズを日本語を交えて指導します。</div>
                     </div>
-                    <button class="card-btn">Lucas と対話練習を始める →</button>
+                    <div class="card-btn">Lucas と対話練習を始める →</div>
                 </div>
             </div>
         </div>
@@ -443,12 +443,8 @@
             );
         }
 
-        window.onload = async function() {
-            await loadConfig();
-            initWebSocketOrDirect();
-        };
-
-        function showView(viewName) {
+        // グローバル空間（window）への明示的登録・即座参照対応
+        window.showView = function(viewName) {
             if (viewName !== 'chat') {
                 if (proactiveTimer) {
                     clearTimeout(proactiveTimer);
@@ -466,32 +462,44 @@
             if (viewName === 'chat') {
                 setTimeout(focusInput, 100);
             }
-        }
+        };
 
-        function selectCharacterAndStart(charKey) {
-            stopAudio();
-            document.getElementById('charSelect').value = charKey;
-            const labelMap = {
-                'emma': '🎓 Emma (フレンドリー講師)',
-                'james': '💼 James (ビジネス講師)',
-                'chloe': '🎨 Chloe (カジュアル対話)',
-                'lucas': '✈️ Lucas (トラベル英語)'
-            };
-            const displayEl = document.getElementById('currentCharDisplay');
-            if (displayEl) displayEl.innerText = labelMap[charKey] || CHAR_MAP[charKey];
+        window.selectCharacterAndStart = function(charKey) {
+            try {
+                stopAudio();
+                const selectEl = document.getElementById('charSelect');
+                if (selectEl) selectEl.value = charKey;
 
-            const chatBox = document.getElementById('chat-box');
-            if (chatBox) chatBox.innerHTML = '';
-            sessionHistoryBuffer = [];
-            directConversationHistory = [];
-            if (proactiveTimer) {
-                clearTimeout(proactiveTimer);
-                proactiveTimer = null;
+                const labelMap = {
+                    'emma': '🎓 Emma (フレンドリー講師)',
+                    'james': '💼 James (ビジネス講師)',
+                    'chloe': '🎨 Chloe (カジュアル対話)',
+                    'lucas': '✈️ Lucas (トラベル英語)'
+                };
+                const displayEl = document.getElementById('currentCharDisplay');
+                if (displayEl) displayEl.innerText = labelMap[charKey] || (CHAR_MAP[charKey] || charKey);
+
+                const chatBox = document.getElementById('chat-box');
+                if (chatBox) chatBox.innerHTML = '';
+                sessionHistoryBuffer = [];
+                directConversationHistory = [];
+                if (proactiveTimer) {
+                    clearTimeout(proactiveTimer);
+                    proactiveTimer = null;
+                }
+
+                changeCharacter();
+            } catch(e) {
+                console.error('selectCharacterAndStart error:', e);
+            } finally {
+                window.showView('chat');
             }
+        };
 
-            changeCharacter();
-            showView('chat');
-        }
+        window.onload = async function() {
+            await loadConfig();
+            initWebSocketOrDirect();
+        };
 
         function toggleStop() {
             isStopped = !isStopped;

@@ -172,7 +172,7 @@
                         <div class="char-voice-tag">🎙️ VOICEVOX: 四国めたん / Native</div>
                         <div class="char-desc">明るく優しい英会話講師。日本語で丁寧にアドバイスしながら簡単な英語フレーズを優しくレクチャーしてくれます。</div>
                     </div>
-                    <div class="card-btn" onclick="selectCharacterAndStart('emma'); event.stopPropagation();">Emma とレッスンを始める →</div>
+                    <div class="card-btn">Emma とレッスンを始める →</div>
                 </div>
 
                 <!-- チューター2: ジェームズ (ビジネス & アカデミック) -->
@@ -184,7 +184,7 @@
                         <div class="char-voice-tag">🎙️ VOICEVOX: 波音リツ / Native</div>
                         <div class="char-desc">洗練されたビジネス表現や丁寧な英語を伝授。日本語でワンポイント解説を挟みつつキャリア英語を指導します。</div>
                     </div>
-                    <div class="card-btn" onclick="selectCharacterAndStart('james'); event.stopPropagation();">James とレッスンを始める →</div>
+                    <div class="card-btn">James とレッスンを始める →</div>
                 </div>
 
                 <!-- チューター3: クロエ (カジュアル日常会話 & スラング) -->
@@ -196,7 +196,7 @@
                         <div class="char-voice-tag">🎙️ VOICEVOX: 春日部つむぎ / Native</div>
                         <div class="char-desc">海外の友達感覚で楽しくお喋り！日本語をベースに日常の表現やイディオム、使える表現を楽しく教えてくれます。</div>
                     </div>
-                    <div class="card-btn" onclick="selectCharacterAndStart('chloe'); event.stopPropagation();">Chloe と会話を始める →</div>
+                    <div class="card-btn">Chloe と会話を始める →</div>
                 </div>
 
                 <!-- チューター4: ルーカス (海外旅行 & シチュエーション) -->
@@ -208,7 +208,7 @@
                         <div class="char-voice-tag">🎙️ VOICEVOX: 雨晴はう / Native</div>
                         <div class="char-desc">空港、カフェ、ホテル、道案内など、海外旅行やロールプレイ形式で使える実践フレーズを日本語を交えて指導します。</div>
                     </div>
-                    <div class="card-btn" onclick="selectCharacterAndStart('lucas'); event.stopPropagation();">Lucas と対話練習を始める →</div>
+                    <div class="card-btn">Lucas と対話練習を始める →</div>
                 </div>
             </div>
         </div>
@@ -443,12 +443,8 @@
             );
         }
 
-        window.onload = async function() {
-            await loadConfig();
-            initWebSocketOrDirect();
-        };
-
-        function showView(viewName) {
+        // グローバル空間（window）への明示的登録・即座参照対応
+        window.showView = function(viewName) {
             if (viewName !== 'chat') {
                 if (proactiveTimer) {
                     clearTimeout(proactiveTimer);
@@ -466,9 +462,9 @@
             if (viewName === 'chat') {
                 setTimeout(focusInput, 100);
             }
-        }
+        };
 
-        function selectCharacterAndStart(charKey) {
+        window.selectCharacterAndStart = function(charKey) {
             try {
                 stopAudio();
                 const selectEl = document.getElementById('charSelect');
@@ -496,9 +492,14 @@
             } catch(e) {
                 console.error('selectCharacterAndStart error:', e);
             } finally {
-                showView('chat');
+                window.showView('chat');
             }
-        }
+        };
+
+        window.onload = async function() {
+            await loadConfig();
+            initWebSocketOrDirect();
+        };
 
         function toggleStop() {
             isStopped = !isStopped;
