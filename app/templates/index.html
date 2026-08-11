@@ -865,7 +865,7 @@
             }
 
             if (isProactive) {
-                sysPrompt += "\n\n【自発リード指示】生徒が少し沈黙しています。日本語で優しく『〜について英語で話してみませんか？』『例えば "..." と言ってみましょう！』と次の話題や質問を投げかけてリードしてください。";
+                sysPrompt += "\n\n【自発リード指示】生徒が少し沈黙しています。日本語で優しく『〜について英語で話してみませんか？』『例えば〇〇と言ってみましょう！』と次の話題や質問を投げかけてリードしてください。";
             }
 
             return sysPrompt;
@@ -1125,15 +1125,16 @@
                 sessionHistoryBuffer.push({ sender: sender, text: text, cls: cls });
             }
             const chatBox = document.getElementById('chat-box');
-            const div = document.createElement('div');
-            div.className = 'msg ' + cls;
+            const div = document.className ? document.createElement('div') : null;
+            const targetDiv = div || document.createElement('div');
+            targetDiv.className = 'msg ' + cls;
             const formattedText = String(text)
                 .split('&').join('&amp;')
                 .split('<').join('&lt;')
                 .split('>').join('&gt;')
                 .split('\n').join('<br>');
-            div.innerHTML = '<div class="sender-name">' + sender + '</div><div>' + formattedText + '</div>';
-            chatBox.appendChild(div);
+            targetDiv.innerHTML = '<div class="sender-name">' + sender + '</div><div>' + formattedText + '</div>';
+            chatBox.appendChild(targetDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
 
             if (cls.includes('msg-ai')) {
