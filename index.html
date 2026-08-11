@@ -865,7 +865,7 @@
             }
 
             if (isProactive) {
-                sysPrompt += "\n\n【自発リード指示】生徒が少し沈黙しています。日本語で優しく『〜について英語で話してみませんか？』『例えば "..." と言ってみましょう！』と次の話題や質問を投げかけてリードしてください。";
+                sysPrompt += "\n\n【自発リード指示】生徒が少し沈黙しています。日本語で優しく『〜について英語で話してみませんか？』『例えば〇〇と言ってみましょう！』と次の話題や質問を投げかけてリードしてください。";
             }
 
             return sysPrompt;
@@ -880,8 +880,8 @@
             if (cfg.inference_mode === 'mock' || !cfg.runpod_api_key || !cfg.runpod_endpoint_id) {
                 removeTypingIndicator();
                 const mockReply = isProactive 
-                    ? `こんにちは！${userNameVal}さん。何か英語で話してみたい話題はありますか？例えば "How is the weather today?" (今日の天気はどうですか？) などいかがですか？`
-                    : `素晴らしいですね！${userNameVal}さん。例えば "I want to learn English!" (英語を学びたいです！) のように表現するとバッチリです。英語で言ってみましょう！`;
+                    ? `こんにちは！${userNameVal}さん。何か英語で話してみたい話題はありますか？例えば 「How is the weather today?」 (今日の天気はどうですか？) などいかがですか？`
+                    : `素晴らしいですね！${userNameVal}さん。例えば 「I want to learn English!」 (英語を学びたいです！) のように表現するとバッチリです。英語で言ってみましょう！`;
                 
                 appendMsg(charName, mockReply, 'msg-ai');
                 resetProactiveTimer(true, mockReply);

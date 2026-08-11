@@ -880,8 +880,8 @@
             if (cfg.inference_mode === 'mock' || !cfg.runpod_api_key || !cfg.runpod_endpoint_id) {
                 removeTypingIndicator();
                 const mockReply = isProactive 
-                    ? `こんにちは！${userNameVal}さん。何か英語で話してみたい話題はありますか？例えば "How is the weather today?" (今日の天気はどうですか？) などいかがですか？`
-                    : `素晴らしいですね！${userNameVal}さん。例えば "I want to learn English!" (英語を学びたいです！) のように表現するとバッチリです。英語で言ってみましょう！`;
+                    ? `こんにちは！${userNameVal}さん。何か英語で話してみたい話題はありますか？例えば 「How is the weather today?」 (今日の天気はどうですか？) などいかがですか？`
+                    : `素晴らしいですね！${userNameVal}さん。例えば 「I want to learn English!」 (英語を学びたいです！) のように表現するとバッチリです。英語で言ってみましょう！`;
                 
                 appendMsg(charName, mockReply, 'msg-ai');
                 resetProactiveTimer(true, mockReply);
