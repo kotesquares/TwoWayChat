@@ -159,7 +159,7 @@
         <div id="view-home" class="view-panel active">
             <div class="hero-section">
                 <h2>AIが自発的にリードする 英会話チューター</h2>
-                <p>AIがあなたの英語レベルを認識し、自発的に話題を振りながら英会話上達へリードします。専属チューターを選んで楽しくレッスンを始めましょう！</p>
+                <p>日本語で優しくアドバイスしながら、あなたのレベルに合わせて英会話を引っ張ってくれます。専属チューターを選んでレッスンを始めましょう！</p>
             </div>
 
             <div class="char-grid">
@@ -169,8 +169,8 @@
                         <div class="char-avatar">🎓</div>
                         <div class="char-name">Emma (エマ)</div>
                         <div class="char-role">初心者歓迎・優しくほめ上手な講師</div>
-                        <div class="char-voice-tag">🎙️ Native English (US) / めたん</div>
-                        <div class="char-desc">明るく優しいネイティブ講師。ゆっくり分かりやすい英語で会話をリードし、言葉に詰まっても温かくサポートしてくれます。</div>
+                        <div class="char-voice-tag">🎙️ VOICEVOX: 四国めたん / Native</div>
+                        <div class="char-desc">明るく優しい英会話講師。日本語で丁寧にアドバイスしながら簡単な英語フレーズを優しくレクチャーしてくれます。</div>
                     </div>
                     <button class="card-btn">Emma とレッスンを始める →</button>
                 </div>
@@ -181,8 +181,8 @@
                         <div class="char-avatar">💼</div>
                         <div class="char-name">James (ジェームズ)</div>
                         <div class="char-role">ビジネス & 実用英会話スペシャリスト</div>
-                        <div class="char-voice-tag">🎙️ Native English (US) / リツ</div>
-                        <div class="char-desc">洗練された自然な英語表現やビジネスシーンの対話を伝授。説得力のある表現やキャリア英会話を効率よく学べます。</div>
+                        <div class="char-voice-tag">🎙️ VOICEVOX: 波音リツ / Native</div>
+                        <div class="char-desc">洗練されたビジネス表現や丁寧な英語を伝授。日本語でワンポイント解説を挟みつつキャリア英語を指導します。</div>
                     </div>
                     <button class="card-btn">James とレッスンを始める →</button>
                 </div>
@@ -193,8 +193,8 @@
                         <div class="char-avatar">🎨</div>
                         <div class="char-name">Chloe (クロエ)</div>
                         <div class="char-role">日常英会話 & トレンド会話パートナー</div>
-                        <div class="char-voice-tag">🎙️ Native English (UK/US) / つむぎ</div>
-                        <div class="char-desc">海外の友達感覚で楽しくお喋り！海外のトレンド、エンタメ、日常のイディオムやカジュアル表現を楽しく学べます。</div>
+                        <div class="char-voice-tag">🎙️ VOICEVOX: 春日部つむぎ / Native</div>
+                        <div class="char-desc">海外の友達感覚で楽しくお喋り！日本語をベースに日常の表現やイディオム、使える表現を楽しく教えてくれます。</div>
                     </div>
                     <button class="card-btn">Chloe と会話を始める →</button>
                 </div>
@@ -205,8 +205,8 @@
                         <div class="char-avatar">✈️</div>
                         <div class="char-name">Lucas (ルーカス)</div>
                         <div class="char-role">トラベル & 実践シチュエーション講師</div>
-                        <div class="char-voice-tag">🎙️ Native English (US) / はう</div>
-                        <div class="char-desc">空港、カフェ、ホテル、道案内など、海外旅行やロールプレイ形式で使える実践的なトラベル英会話をリードします。</div>
+                        <div class="char-voice-tag">🎙️ VOICEVOX: 雨晴はう / Native</div>
+                        <div class="char-desc">空港、カフェ、ホテル、道案内など、海外旅行やロールプレイ形式で使える実践フレーズを日本語を交えて指導します。</div>
                     </div>
                     <button class="card-btn">Lucas と対話練習を始める →</button>
                 </div>
@@ -241,7 +241,7 @@
             <div id="chat-container">
                 <div id="chat-box"></div>
                 <div class="chat-controls">
-                    <input type="text" id="msgInput" placeholder="Type your message in English or Japanese..." onkeydown="if(event.key==='Enter') sendMsg()">
+                    <input type="text" id="msgInput" placeholder="日本語または英語でメッセージを入力..." onkeydown="if(event.key==='Enter') sendMsg()">
                     <button class="btn btn-primary" onclick="sendMsg()">Send</button>
                 </div>
             </div>
@@ -276,9 +276,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label>🎙️ VOICEVOX サーバー URL (サブ補聴)</label>
+                    <label>🎙️ VOICEVOX サーバー URL</label>
                     <input type="text" id="voicevox_server_url" value="http://localhost:50021" placeholder="例: http://localhost:50021">
-                    <div class="form-hint">自前のPCで動いている VOICEVOX アプリのURL。</div>
+                    <div class="form-hint">自前のPCで動いている VOICEVOX アプリのURL。日本語会話のアドバイスを高音質で読み上げます！</div>
                 </div>
 
                 <!-- チューター別 学習カスタマイズ指示機能 -->
@@ -338,15 +338,15 @@
             <div class="card">
                 <h2>📖 AI 英会話チューターの使い方 & RunPod 設定</h2>
                 <p style="color: var(--text-sub); margin-bottom: 20px; font-size: 0.9rem;">
-                    AIチューターがあなたの英語力を分析し、レベルに合わせて自発的に楽しくレッスンを引っ張ってくれます！
+                    AIチューターがあなたの英語力を分析し、日本語で丁寧にアドバイスしながら自発的に楽しくレッスンを引っ張ってくれます！
                 </p>
 
                 <div class="step-box">
                     <h3>💡 効果的な学習のコツ</h3>
                     <p>
-                        ・間違った英語を気にせずどんどん送信してください！AIが自動でレベルを察知して返答してくれます。<br>
-                        ・返答に困ったら少し待ってみてください。AIチューターが自発的にヒントや次の質問を投げかけてくれます！<br>
-                        ・設定画面で「返答の末尾に日本語訳をつける」と入力すると、初心者でも安心して英会話が学べます。
+                        ・日本語で「これ英語でなんて言うの？」「日常会話を練習したい！」と話しかけてOKです！<br>
+                        ・間違った英語を気にせずどんどん送信してください！AIが日本語で優しく解説・訂正してくれます。<br>
+                        ・返答に困ったら少し待ってみてください。AIチューターが自発的にヒントや次の質問を投げかけてくれます！
                     </p>
                 </div>
 
@@ -390,47 +390,48 @@
             'lucas': 10   // 雨晴はう
         };
 
-        // 【英会話チューター コア・システムプロンプト構造】
+        // 【ご要望改修】日本語ベースで優しく英語を教えるプロンプト構造
         const SYSTEM_PROMPTS = {
-            'emma': `【Role & Persona】
-You are Emma, a warm, friendly, encouraging, and supportive native AI English Tutor.
-Your student's name is {user_name}.
+            'emma': `【基本設定 & 役割】
+あなたは優しく親切で明るい AI 英会話講師 Emma (エマ) です。
+生徒の名前: {user_name}
 
-【Core Instructions & Level Adaptation】
-1. Analyze {user_name}'s English proficiency level (Beginner, Intermediate, or Advanced) from the conversation history and adjust your vocabulary and grammar level to match them perfectly.
-2. Respond in natural, warm English (1-3 sentences).
-3. If {user_name} makes a noticeable English grammar or vocabulary error, gently provide a natural alternative phrasing in a friendly manner.
-4. Always ask a follow-up question or offer a helpful topic to keep the conversation flowing smoothly.
-5. If {user_name} writes in Japanese, kindly respond in easy English and support them.`,
+【対話・指導の絶対ルール】
+1. 【メイン言語は日本語】基本は「丁寧で優しい日本語」で対話し、解説・アドバイス・ほめ言葉・質問を提供すること。英語だけで畳みかけるのは絶対禁止。
+2. 【英語フレーズと日本語訳】学べる英語フレーズ（1〜2文）を提案・会話に交える際は、必ず直後に (日本語訳) を添えること。
+   例: 「素晴らしいですね！例えば "I had a great time today!" (今日はとても楽しかったです！) と言うと自然ですよ。言ってみましょう！」
+3. 【レベル自動適応】生徒の入力から英語レベル（初級・中級・上級）を察知し、説明や英語フレーズの難易度を合わせること。
+4. 【自発リード】会話の最後は、生徒が英語で答えやすい質問や次の話題を日本語で優しく投げかけてリードすること。`,
 
-            'james': `【Role & Persona】
-You are James, a professional, articulate, and smart AI Business & Professional English Tutor.
-Your student's name is {user_name}.
+            'james': `【基本設定 & 役割】
+あなたは洗練されたスマートな AI ビジネス・実用英会話講師 James (ジェームズ) です。
+生徒の名前: {user_name}
 
-【Core Instructions & Level Adaptation】
-1. Analyze {user_name}'s English level from the conversation and adapt your language complexity.
-2. Provide polished, professional, and practical English expressions used in business, career, or formal contexts (1-3 sentences).
-3. Suggest better phrasing or professional vocabulary when helpful.
-4. Keep the discussion engaging by asking insightful follow-up questions.`,
+【対話・指導の絶対ルール】
+1. 【メイン言語は日本語】対話のベースは「落ち着いた日本語」で行い、ビジネスやキャリアで役立つ英会話ワンポイント解説・アドバイスを提供すること。
+2. 【英語フレーズと日本語訳】実用的な英語フレーズや言い換え（1〜2文）を提示する際は、必ず直後に (日本語訳) を添えること。
+3. 【レベル自動適応】生徒の習熟度を察知し、ビジネス・アカデミック表現の難易度を適応させること。
+4. 【自発リード】会話の最後は、仕事や海外ニュース、キャリアに関する質問を日本語で投げかけてリードすること。`,
 
-            'chloe': `【Role & Persona】
-You are Chloe, an energetic, trendy, and casual AI English Conversation Partner.
-Your friend's name is {user_name}.
+            'chloe': `【基本設定 & 役割】
+あなたは明るくフレンドリーな AI カジュアル英会話パートナー Chloe (クロエ) です。
+友達の名前: {user_name}
 
-【Core Instructions & Level Adaptation】
-1. Adapt your English level dynamically based on {user_name}'s responses.
-2. Chat like a close native friend using natural everyday English, fun idioms, and casual phrases (1-3 sentences).
-3. Keep the vibe upbeat, fun, and highly encouraging!
-4. Always proactively suggest fun topics or ask engaging questions about daily life, hobbies, or trends.`,
+【対話・指導の絶対ルール】
+1. 【メイン言語は日本語】フレンドリーで親しみやすい「日本語」をベースに楽しくお喋りし、日常で使えるフレーズや海外のトレンドを教えること。
+2. 【英語フレーズと日本語訳】カジュアルな英語表現やイディオム、スラングを教える際は、必ず直後に (日本語訳) を添えること。
+3. 【レベル自動適応】相手の英語力に合わせて、日常英会話の表現レベルを適応させること。
+4. 【自発リード】趣味、エンタメ、日常の話題について日本語で楽しく質問し、会話をリードすること。`,
 
-            'lucas': `【Role & Persona】
-You are Lucas, a knowledgeable, friendly, and practical Travel & Situational English Tutor.
-Your student's name is {user_name}.
+            'lucas': `【基本設定 & 役割】
+あなたは頼もしく実用的な AI トラベル・実践英会話講師 Lucas (ルーカス) です。
+生徒の名前: {user_name}
 
-【Core Instructions & Level Adaptation】
-1. Adapt your sentence length and vocabulary to match {user_name}'s proficiency.
-2. Practice travel scenarios (airports, cafes, hotels, asking directions, dining out) and real-life situational English (1-3 sentences).
-3. Give practical phrasing tips and proactively guide {user_name} through roleplay situations.`
+【対話・指導の絶対ルール】
+1. 【メイン言語は日本語】「分かりやすい日本語」をベースに指導し、空港・カフェ・ホテル・旅行先でそのまま使える実践フレーズをレクチャーすること。
+2. 【英語フレーズと日本語訳】実践フレーズ（1〜2文）を出す際は、必ず直後に (日本語訳) を添えること。
+3. 【レベル自動適応】生徒のレベルに合わせてロールプレイやフレーズ難易度を調整すること。
+4. 【自発リード】旅行のシチュエーションや次のシチュエーション練習を日本語で提案・リードすること。`
         };
 
         const SECRET_KEY_SEED = new TextEncoder().encode("TwoWayChat_AES256_Binary_Encryption_Key_2026");
@@ -496,18 +497,18 @@ Your student's name is {user_name}.
             isStopped = !isStopped;
             const btn = document.getElementById('stopToggleBtn');
             if (isStopped) {
-                btn.innerText = '▶️ RESUME';
+                btn.innerText = '▶️ 再開';
                 btn.className = 'btn btn-primary';
                 if (proactiveTimer) {
                     clearTimeout(proactiveTimer);
                     proactiveTimer = null;
                 }
                 stopAudio();
-                appendMsg('System', 'Lesson paused.', 'msg-sys');
+                appendMsg('システム', 'レッスンを一時停止しました。', 'msg-sys');
             } else {
-                btn.innerText = '⏸️ PAUSE';
+                btn.innerText = '⏸️ 一時停止';
                 btn.className = 'btn btn-secondary';
-                appendMsg('System', 'Lesson resumed.', 'msg-sys');
+                appendMsg('システム', 'レッスンを再開しました。', 'msg-sys');
                 resetProactiveTimer(true);
             }
         }
@@ -518,7 +519,7 @@ Your student's name is {user_name}.
             if (isVoiceEnabled) {
                 btn.innerText = '🎙️ AUDIO: ON';
                 btn.className = 'btn btn-primary';
-                speakText("Audio voice readout enabled.");
+                speakText("音声読み上げを有効にしました。");
             } else {
                 btn.innerText = '🔇 AUDIO: OFF';
                 btn.className = 'btn btn-secondary';
@@ -537,7 +538,7 @@ Your student's name is {user_name}.
             if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         }
 
-        // ネイティブ英語読み上げ (en-US WebSpeech 優先 + VOICEVOX ハイブリッド)
+        // 日本語メイン ＋ VOICEVOX 優先再生エンジン
         async function speakText(text) {
             if (!isVoiceEnabled) return;
             stopAudio();
@@ -545,31 +546,11 @@ Your student's name is {user_name}.
             const cleanText = text.replace(/https?:\/\/\S+/g, '').trim();
             if (!cleanText) return;
 
-            // 1. まずブラウザ標準の Native English (en-US / en-GB) WebSpeech で高音質英語再生を試みる
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(cleanText);
-                utterance.lang = 'en-US';
-                utterance.rate = 0.95; // リスニングしやすく少し落ち着いたテンポ
-                utterance.pitch = 1.0;
-
-                const voices = window.speechSynthesis.getVoices();
-                const enVoices = voices.filter(v => v.lang.includes('en') || v.lang.includes('EN'));
-                let selectedVoice = enVoices.find(v => 
-                    v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Daniel')
-                ) || enVoices[0];
-
-                if (selectedVoice) {
-                    utterance.voice = selectedVoice;
-                    window.speechSynthesis.speak(utterance);
-                    return;
-                }
-            }
-
-            // 2. フォールバック: VOICEVOX サーバーへ試行
             const charKey = document.getElementById('charSelect').value;
             const speakerId = VOICEVOX_SPEAKERS[charKey] || 6;
             const customVoicevoxUrl = (document.getElementById('voicevox_server_url') ? document.getElementById('voicevox_server_url').value.trim() : '') || 'http://localhost:50021';
 
+            // 1. VOICEVOX 自前サーバー優先 (日本語・英語交じりを自然に高音質再生)
             try {
                 const queryRes = await fetch(`${customVoicevoxUrl}/audio_query?text=${encodeURIComponent(cleanText)}&speaker=${speakerId}`, { method: 'POST' });
                 if (queryRes.ok) {
@@ -583,9 +564,19 @@ Your student's name is {user_name}.
                         const blob = await synthRes.blob();
                         currentAudio = new Audio(URL.createObjectURL(blob));
                         await currentAudio.play();
+                        return;
                     }
                 }
             } catch(e) {}
+
+            // 2. フォールバック: WebSpeech API (日本語)
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = 'ja-JP';
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                window.speechSynthesis.speak(utterance);
+            }
         }
 
         function getStoredConfig() {
@@ -724,16 +715,15 @@ Your student's name is {user_name}.
                     },
                     body: JSON.stringify({
                         input: {
-                            prompt: "Hello! Can you help me practice English?",
+                            prompt: "こんにちは！英会話のレッスンをお願いします。",
                             model: cfg.ollama_model_name
                         }
                     })
                 });
                 const data = await res.json();
                 
-                // コールドスタート待機表示 (delayTime / IN_PROGRESS) をガード
                 let rawObj = data.output || data;
-                if (data.status === 'IN_PROGRESS' || (rawObj && rawObj.delayTime) || (typeof rawObj === 'object' && rawObj.status === 'IN_PROGRESS')) {
+                if (data.status === 'IN_PROGRESS' || (rawObj && (rawObj.delayTime || rawObj.status === 'IN_PROGRESS'))) {
                     showAlert('info', '⏳ RunPod サーバーレスを起動中です (Warming Up)... もう一度接続テストを押してください。');
                     if (btn) { btn.disabled = false; btn.innerText = originalText; }
                     return;
@@ -793,7 +783,6 @@ Your student's name is {user_name}.
                     removeTypingIndicator();
                     const charName = CHAR_MAP[data.character] || data.character || 'AI Tutor';
                     if (data.type === 'ai_response' || data.type === 'proactive_message') {
-                        // コールドスタート待機メッセージの強力フィルタリング
                         const strVal = String(data.content || '');
                         if (strVal.includes('delayTime') || strVal.includes('IN_PROGRESS')) {
                             console.log('[RunPod Engine] Filtered out warming-up JSON message from WS.');
@@ -863,12 +852,12 @@ Your student's name is {user_name}.
             if (customPromptStr) {
                 const rules = customPromptStr.split(/[,、\s]+/).filter(r => r.length > 0);
                 if (rules.length > 0) {
-                    sysPrompt += "\n\n【Custom Student Preferences / 学習カスタムルール】\n" + rules.map(r => `- ${r}`).join("\n");
+                    sysPrompt += "\n\n【生徒からの追加カスタマイズ要望】\n" + rules.map(r => `- ${r}`).join("\n");
                 }
             }
 
             if (isProactive) {
-                sysPrompt += "\n\n【Proactive Lead Instruction】The student has been quiet for a short while. Proactively offer a new interesting topic, ask a friendly follow-up question, or prompt them to practice a useful English expression!";
+                sysPrompt += "\n\n【自発リード指示】生徒が少し沈黙しています。日本語で優しく『〜について英語で話してみませんか？』『例えば "..." と言ってみましょう！』と次の話題や質問を投げかけてリードしてください。";
             }
 
             return sysPrompt;
@@ -883,8 +872,8 @@ Your student's name is {user_name}.
             if (cfg.inference_mode === 'mock' || !cfg.runpod_api_key || !cfg.runpod_endpoint_id) {
                 removeTypingIndicator();
                 const mockReply = isProactive 
-                    ? `Hello ${userNameVal}! How is your day going? Feel free to ask me anything in English!`
-                    : `That's great! Welcome ${userNameVal}. Let's practice English together today! What topic would you like to talk about?`;
+                    ? `こんにちは！${userNameVal}さん。何か英語で話してみたい話題はありますか？例えば "How is the weather today?" (今日の天気はどうですか？) などいかがですか？`
+                    : `素晴らしいですね！${userNameVal}さん。例えば "I want to learn English!" (英語を学びたいです！) のように表現するとバッチリです。英語で言ってみましょう！`;
                 
                 appendMsg(charName, mockReply, 'msg-ai');
                 resetProactiveTimer(true, mockReply);
@@ -911,13 +900,12 @@ Your student's name is {user_name}.
                         input: {
                             prompt: fullPrompt,
                             model: cfg.ollama_model_name,
-                            max_tokens: 150
+                            max_tokens: 200
                         }
                     })
                 });
                 const data = await res.json();
 
-                // 【バグ修正】コールドスタート時の delayTime / IN_PROGRESS レスポンスの強力ガード
                 let rawObj = data.output || data;
                 if (Array.isArray(rawObj) && rawObj.length > 0) {
                     rawObj = rawObj[0];
@@ -940,7 +928,6 @@ Your student's name is {user_name}.
                     reply = JSON.stringify(rawObj);
                 }
 
-                // 文字列チェックでも delayTime / IN_PROGRESS が入っている場合は表示・読み上げを完全遮断
                 if (reply.includes('delayTime') || reply.includes('IN_PROGRESS') || reply.includes('workerId')) {
                     console.log('[RunPod Engine] Filtered out warming-up JSON message string.');
                     showTypingIndicator();
